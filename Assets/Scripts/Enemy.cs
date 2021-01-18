@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
         // Generation enemy stats{
         System.Random rnd = new System.Random();
         int playerTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
+        Debug.Log(playerTier);
         switch (playerTier)
         {
             case 1: 
@@ -49,7 +50,7 @@ public class Enemy : MonoBehaviour
         // }
         
         _body.mass = this.enemyWeight;
-        transform.localScale = new Vector3(enemySize,enemySize);
+        transform.localScale = new Vector3(this.enemySize,this.enemySize);
         moveDirection = 1;
     }
 
@@ -65,26 +66,20 @@ public class Enemy : MonoBehaviour
         int layerMask = LayerMask.GetMask("Blocks");
         // Wall check{
         Vector2 wallCheckDirection = moveDirection > 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, wallCheckDirection, 0.75f, layerMask);
-        
-        Debug.DrawRay(transform.position, wallCheckDirection, Color.yellow);
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, wallCheckDirection, this.enemySize, layerMask);
         
         if (hitWall.collider != null)
         {
-            Debug.Log("wall");
             this.moveDirection *= -1;
         }
         // }
         
         // Floor check{
         Vector2 floorCheckDirection = new Vector2(moveDirection > 0 ? 1.0f : -1.0f, -0.5f);
-        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, 1.0f, layerMask);
-        
-        Debug.DrawRay(transform.position, floorCheckDirection, Color.red);
+        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f, layerMask);
         
         if (hitFloor.collider == null)
         {
-            Debug.Log("floor");
             this.moveDirection *= -1;
         }
         // }
