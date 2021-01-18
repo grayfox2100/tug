@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class LevelGen : MonoBehaviour
@@ -8,10 +9,13 @@ public class LevelGen : MonoBehaviour
     public int LevelSizeY = 8;
     public GameObject LavaPrefab;
     public GameObject BlockPrefab;
+    public GameObject FinishPrefab;
     
     // Start is called before the first frame update
     void Start()
     {
+        System.Random rnd = new System.Random();
+        
         // Make lava {
         int lavaCount = 0;
         for (int x = 1; x < (levelSizeX + 1); x++)
@@ -36,6 +40,16 @@ public class LevelGen : MonoBehaviour
                 Instantiate(BlockPrefab, new Vector3((levelSizeX + 1), y),Quaternion.identity); // Upper horizontal border
             }
         }
+        // }
+        
+        // Make start point {
+        int startPointY = rnd.Next(2, (LevelSizeY - 1));
+        Instantiate(BlockPrefab, new Vector3(1, startPointY),Quaternion.identity);
+        // }
+        
+        // Make finish point {
+        int finishPointY = rnd.Next(2, (LevelSizeY - 1));
+        Instantiate(FinishPrefab, new Vector3(levelSizeX, finishPointY),Quaternion.identity);
         // }
     }
 
