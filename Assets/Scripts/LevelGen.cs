@@ -14,6 +14,7 @@ public class LevelGen : MonoBehaviour
     public GameObject blockPrefab;
     public GameObject finishPrefab;
     public GameObject enemyPrefab;
+    public GameObject playerPrefab;
     
     private System.Random rnd = new System.Random();
     
@@ -31,6 +32,7 @@ public class LevelGen : MonoBehaviour
             MakePath(startPoint, finishPoint);
         }
         SpawnEnemies();
+        SpawnPlayer(startPoint);
     }
 
     // Update is called once per frame
@@ -227,5 +229,10 @@ public class LevelGen : MonoBehaviour
             Instantiate(enemyPrefab, new Vector3(i,levelSizeY),Quaternion.identity);
             i += enemiesRareness;
         }
+    }
+    
+    private void SpawnPlayer(int startPoint)
+    {
+        Instantiate(playerPrefab, new Vector3(0,startPoint + 1),Quaternion.identity);
     }
 }

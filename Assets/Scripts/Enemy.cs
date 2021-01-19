@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
         // Generation enemy stats{
         System.Random rnd = new System.Random();
         int playerTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
-        Debug.Log(playerTier);
+
         switch (playerTier)
         {
             case 1: 
@@ -63,12 +63,11 @@ public class Enemy : MonoBehaviour
         _body.velocity = movement; // Assign new velocity value
         // }
         
-        int layerMask = LayerMask.GetMask("Blocks");
-        // Wall check{
+        // Wall or another enemy check{
         Vector2 forwardDiretion = moveDirection > 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDiretion, this.enemySize, layerMask);
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDiretion, this.enemySize);
         
-        if (hitWall.collider != null)
+        if (hitWall.collider != null && (hitWall.collider.CompareTag("Enemy") || hitWall.collider.CompareTag("Wall")))
         {
             this.moveDirection *= -1;
         }
@@ -76,24 +75,13 @@ public class Enemy : MonoBehaviour
         
         // Floor check{
         Vector2 floorCheckDirection = new Vector2(moveDirection > 0 ? 1.0f : -1.0f, -0.5f);
-        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f, layerMask);
+        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f);
         
         if (hitFloor.collider == null)
         {
             this.moveDirection *= -1;
         }
         // }
-        
-
-        // Another enemies check{
-        RaycastHit2D hitEnemy = Physics2D.Raycast(transform.position, forwardDiretion, this.enemySize);
-        
-        if (hitEnemy.collider != null)
-        {
-            this.moveDirection *= -1;
-        }
-        // }
-
     }
     
 }
