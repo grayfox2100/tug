@@ -491,7 +491,7 @@ MonoBehaviour:
   levelSizeY: 8
   pointStepX: 10
   pathsRareness: 4
-  enemiesRareness: 4
+  enemiesRareness: 8
   lavaPrefab: {fileID: 353844149698880784, guid: 1accf83704629504883f206f72bc5f79,
     type: 3}
   blockPrefab: {fileID: 8512158278049260764, guid: c2917117cc01f4f4faea70b309eb9186,
@@ -1080,6 +1080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PauseMenuUI: {fileID: 491721031}
+  ResumeButton: {fileID: 539377763}
 --- !u!1 &1952696722
 GameObject:
   m_ObjectHideFlags: 0

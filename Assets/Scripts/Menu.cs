@@ -6,11 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public static bool gameIsPaused = false;
+    private static bool gameIsPaused = false;
+    private static bool levelDone = false;
     public GameObject PauseMenuUI;
+    public GameObject ResumeButton;
 
     void Update()
     {
+        if (levelDone)
+        {
+            ResumeButton.SetActive(false);
+            Pause();
+        }
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (gameIsPaused)
@@ -40,6 +48,7 @@ public class Menu : MonoBehaviour
 
     public void Restart()
     {
+        levelDone = false;
         Resume();
         
         GameObject player = GameObject.FindWithTag("Player");
@@ -54,8 +63,13 @@ public class Menu : MonoBehaviour
 
     public void AnotherLevel()
     {
+        levelDone = false;
         Resume();
         SceneManager.LoadScene("SampleScene");
     }
-    
+
+    public void LevelDone()
+    {
+        levelDone = true;
+    }
 }

@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     public float weightMax = 5.0f;
     public float livesMin = 1.0f;
     public float livesMax = 3.0f;
-    
+
     private Rigidbody2D _body;
     private CircleCollider2D _playerCollider;
     private int playerWeight;
@@ -30,29 +30,29 @@ public class Player : MonoBehaviour
         switch (playerTier)
         {
             case 1: 
-                this.playerSize = 0.5f;
+                playerSize = 0.5f;
                 break;            
             case 2: 
-                this.playerSize = 0.6f;
+                playerSize = 0.6f;
                 break;            
             case 3: 
-                this.playerSize = 0.7f;
+                playerSize = 0.7f;
                 break;            
             case 4: 
-                this.playerSize = 0.8f;
+                playerSize = 0.8f;
                 break;            
             case 5: 
-                this.playerSize = 0.9f;
+                playerSize = 0.9f;
                 break;
             default:
-                this.playerSize = 1.0f;
+                playerSize = 1.0f;
                 break;
         }
-        this.playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
-        this.playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
+        playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
+        playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
         // }
         
-        _body.mass = this.playerWeight;
+        _body.mass = playerWeight;
         transform.localScale = new Vector3(playerSize,playerSize);
     }
 
@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
         // Player lives check
         if (playerLives < 0)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             Debug.Log("You Died!");
         }
         // }
@@ -95,16 +95,18 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             _body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            this.playerLives--;
-            Debug.Log("Player recive damage! Lives left: " + this.playerLives);
+            playerLives--;
+            Debug.Log("Player recive damage! Lives left: " + playerLives);
         } else if (collision.gameObject.CompareTag("Death"))
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             Debug.Log("You Died!");
         } else if (collision.gameObject.CompareTag("Finish"))
         {
-            Destroy(this.gameObject);
-            Debug.Log("You Died! But win.");
+            Menu pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
+            pauseMenu.LevelDone();
+            //Destroy(gameObject);
+            //Debug.Log("You Died! But win.");
         }
     }
 }
