@@ -16,12 +16,12 @@ public class FollowCam : MonoBehaviour {
 	void Update()
 	{
 		//Debug.Log();
-		Vector3 camTarget = GameObject.FindWithTag("Player").transform.position;
+		GameObject camTarget = GameObject.FindWithTag("Player");
 		Vector3 targetPosition;
-		
+		//Debug.Log(camTarget);
 		if (camTarget != null)
 		{
-			targetPosition = new Vector3(camTarget.x, camTarget.y, transform.position.z);
+			targetPosition = new Vector3(camTarget.transform.position.x, camTarget.transform.position.y, transform.position.z);
 			transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _velocity, smoothTime);
 		}
 		
