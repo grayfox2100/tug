@@ -6,20 +6,31 @@ using UnityEngine;
 public class LevelGen : MonoBehaviour
 {
     public int levelSizeX = 32;
-    public int LevelSizeY = 8;
+    public int levelSizeY = 8;
     public int pointStepX = 7;
-    public GameObject LavaPrefab;
-    public GameObject BlockPrefab;
-    public GameObject FinishPrefab;
+    public int pathsRareness = 4;
+    public int enemiesRareness = 4;
+    public GameObject lavaPrefab;
+    public GameObject blockPrefab;
+    public GameObject finishPrefab;
+    public GameObject enemyPrefab;
     
     private System.Random rnd = new System.Random();
+    
     
     // Start is called before the first frame update
     void Start()
     {
+        int startPoint = MakeStartPoint();
+        int finishPoint = MakeFinishPoint();
+        
         MakeLava();
-        MakeBorders();
-        MakePath();
+        //MakeBorders();
+        for (int i = 0; i < (levelSizeY / pathsRareness); i++)
+        {
+            MakePath(startPoint, finishPoint);
+        }
+        SpawnEnemies();
     }
 
     // Update is called once per frame
@@ -30,57 +41,56 @@ public class LevelGen : MonoBehaviour
 
     private int MakeStartPoint()
     {
-        int startPointY = rnd.Next(2, (LevelSizeY - 1));
-        Instantiate(BlockPrefab, new Vector3(1, startPointY),Quaternion.identity);
+        int startPointY = rnd.Next(2, (levelSizeY - 1));
+        Instantiate(blockPrefab, new Vector3(0, startPointY),Quaternion.identity);
         return startPointY;
     }
 
     private int MakeFinishPoint()
     {
-        int finishPointY = rnd.Next(2, (LevelSizeY - 1));
-        Instantiate(FinishPrefab, new Vector3(levelSizeX, finishPointY),Quaternion.identity);
+        int finishPointY = rnd.Next(2, (levelSizeY - 1));
+        Instantiate(finishPrefab, new Vector3(levelSizeX, finishPointY),Quaternion.identity);
         return finishPointY;
     }
 
     private void MakeLava()
     {
-        //int lavaCount = 0;
-        for (int x = 1; x < (levelSizeX + 1); x++)
+        for (int x = -5; x < (levelSizeX + 5); x++)
         {
-            Instantiate(LavaPrefab, new Vector3(x,1),Quaternion.identity);
+            Instantiate(lavaPrefab, new Vector3(x,1),Quaternion.identity);
         }
     }
 
     private void MakeBorders()
     {
-        for (int y = 0; y < (LevelSizeY + 2); y++)
+        for (int y = 0; y < (levelSizeY + 2); y++)
         {
-            if (y == 0 || y == (LevelSizeY + 1))
+            if (y == 0 || y == (levelSizeY + 1))
             {
                 for (int x = 0; x < (levelSizeX + 2); x++)
                 {
-                    Instantiate(BlockPrefab, new Vector3(x,y),Quaternion.identity); // Vertical borders
+                    Instantiate(blockPrefab, new Vector3(x,y),Quaternion.identity); // Vertical borders
                 }
             }
             else
             {
-                Instantiate(BlockPrefab, new Vector3(0, y),Quaternion.identity); // Lower horizontal border
-                Instantiate(BlockPrefab, new Vector3((levelSizeX + 1), y),Quaternion.identity); // Upper horizontal border
+                Instantiate(blockPrefab, new Vector3(0, y),Quaternion.identity); // Lower horizontal border
+                Instantiate(blockPrefab, new Vector3((levelSizeX + 1), y),Quaternion.identity); // Upper horizontal border
             }
         }
     }
     
-    private void MakePath()
+    private void MakePath(int startPoint, int finishPoint)
     {
-        int previousPointX = 1;
-        int previousPointY = MakeStartPoint();
+        int previousPointX = 0;
+        int previousPointY = startPoint;
         int currentPointX = pointStepX;
         int currentPointY;
 
         while (currentPointX < (levelSizeX - pointStepX))
         {
-            currentPointY = rnd.Next(2, (LevelSizeY - 1));
-            Instantiate(BlockPrefab, new Vector3(currentPointX, currentPointY),Quaternion.identity);
+            currentPointY = rnd.Next(2, (levelSizeY - 1));
+            Instantiate(blockPrefab, new Vector3(currentPointX, currentPointY),Quaternion.identity);
             
             // Make route to point {
             MakeRouteToPoint(previousPointX, previousPointY, currentPointX, currentPointY);
@@ -92,141 +102,130 @@ public class LevelGen : MonoBehaviour
         }
         
         // Make route to finish {
-        MakeRouteToPoint(previousPointX, previousPointY, (levelSizeX - 1), MakeFinishPoint());
+        MakeRouteToPoint(previousPointX, previousPointY, (levelSizeX - 1), finishPoint);
         // }
     }
     
     private void MakeRouteToPoint(int startPointX, int startPointY, int targetPointX, int targetPointY)
     {
+        const int directPrice = 10;
+        const int diagonPrice = 14;
+        
         int currentX = startPointX;
         int currentY = startPointY;
-        // h(v) = |v.x - goal.x| + |v.y - goal.y|
-        int priceToStart = 0;
-        int g; //to previous
-        int h; //to target
-        int[] F = new int[8]; // F = g + h
-        /*int lessF;
-        int i = 0;*/
-
-        //while (currentX != targetPointX && currentY != targetPointY)
+        int summaryPriceToStart = 0;
+        int toPreviousPrice;
+        int toTargetPrice;
+        int[] summaryPrices = new int[8];
+        
         while (currentX < targetPointX)
         {
             // Up Left
-            //g = Mathf.Abs((currentX + 14) - startPointX) + Mathf.Abs((currentY - 14) - startPointY); // To parent cell price
-            g = priceToStart + 14;
-            h = (Math.Abs((currentX - 1) - targetPointX) + Mathf.Abs((currentY + 1) - targetPointY)) * 10; // To target cell price
-            F[0] = g + h;
+            toPreviousPrice = summaryPriceToStart + diagonPrice;
+            toTargetPrice = (Math.Abs((currentX - 1) - targetPointX) + Mathf.Abs((currentY + 1) - targetPointY)) * 10;
+            summaryPrices[0] = toPreviousPrice + toTargetPrice;
             
             // Up
-            //g = Mathf.Abs((currentX + 10) - startPointX) + Mathf.Abs(currentY - startPointY); // To parent cell price
-            g = priceToStart + 10;
-            h = (Math.Abs(currentX - targetPointX) + Mathf.Abs((currentY + 1) - targetPointY)) * 10; // To target cell price
-            F[1] = g + h;
+            toPreviousPrice = summaryPriceToStart + directPrice;
+            toTargetPrice = (Math.Abs(currentX - targetPointX) + Mathf.Abs((currentY + 1) - targetPointY)) * 10;
+            summaryPrices[1] = toPreviousPrice + toTargetPrice;
             
             // Up Right
-            //g = Mathf.Abs((currentX + 14) - startPointX) + Mathf.Abs((currentY + 14) - startPointY); // To parent cell price
-            g = priceToStart + 14;
-            h = (Math.Abs((currentX + 1) - targetPointX) + Mathf.Abs((currentY + 1) - targetPointY)) * 10; // To target cell price
-            F[2] = g + h;
+            toPreviousPrice = summaryPriceToStart + diagonPrice;
+            toTargetPrice = (Math.Abs((currentX + 1) - targetPointX) + Mathf.Abs((currentY + 1) - targetPointY)) * 10;
+            summaryPrices[2] = toPreviousPrice + toTargetPrice;
             
             // Left
-            //g = Mathf.Abs(currentX - startPointX) + Mathf.Abs((currentY - 10) - startPointY); // To parent cell price
-            g = priceToStart + 10;
-            h = (Math.Abs((currentX - 1) - targetPointX) + Mathf.Abs(currentY - targetPointY)) * 10; // To target cell price
-            F[3] = g + h;
+            toPreviousPrice = summaryPriceToStart + directPrice;
+            toTargetPrice = (Math.Abs((currentX - 1) - targetPointX) + Mathf.Abs(currentY - targetPointY)) * 10;
+            summaryPrices[3] = toPreviousPrice + toTargetPrice;
             
             // Right
-            //g = Mathf.Abs(currentX - startPointX) + Mathf.Abs((currentY + 10) - startPointY); // To parent cell price
-            g = priceToStart + 10;
-            h = (Math.Abs((currentX + 1) - targetPointX) + Mathf.Abs(currentY - targetPointY)) * 10; // To target cell price
-            F[4] = g + h;
+            toPreviousPrice = summaryPriceToStart + directPrice;
+            toTargetPrice = (Math.Abs((currentX + 1) - targetPointX) + Mathf.Abs(currentY - targetPointY)) * 10;
+            summaryPrices[4] = toPreviousPrice + toTargetPrice;
             
             // Down Left
-            //g = Mathf.Abs((currentX - 14) - startPointX) + Mathf.Abs((currentY - 14) - startPointY); // To parent cell price
-            g = priceToStart + 14;
-            h = (Math.Abs((currentX - 1) - targetPointX) + Mathf.Abs((currentY - 1) - targetPointY)) * 10; // To target cell price
-            F[5] = g + h;
+            toPreviousPrice = summaryPriceToStart + diagonPrice;
+            toTargetPrice = (Math.Abs((currentX - 1) - targetPointX) + Mathf.Abs((currentY - 1) - targetPointY)) * 10;
+            summaryPrices[5] = toPreviousPrice + toTargetPrice;
             
             // Down
-            //g = Mathf.Abs((currentX - 10) - startPointX) + Mathf.Abs(currentY - startPointY); // To parent cell price
-            g = priceToStart + 10;
-            h = (Math.Abs(currentX - targetPointX) + Mathf.Abs((currentY - 1) - targetPointY)) * 10; // To target cell price
-            F[6] = g + h;
+            toPreviousPrice = summaryPriceToStart + directPrice;
+            toTargetPrice = (Math.Abs(currentX - targetPointX) + Mathf.Abs((currentY - 1) - targetPointY)) * 10;
+            summaryPrices[6] = toPreviousPrice + toTargetPrice;
             
             // Down Right
-            //g = Mathf.Abs((currentX - 14) - startPointX) + Mathf.Abs((currentY + 14) - startPointY); // To parent cell price
-            g = priceToStart + 14;
-            h = (Math.Abs((currentX + 1) - targetPointX) + Mathf.Abs((currentY - 1) - targetPointY)) * 10; // To target cell price
-            F[7] = g + h;
-
-            /*lessF = 0;
-            while (i < 8)
-            {
-                if (F[lessF] > F[i]) lessF = i;
-                i++;
-            }*/
+            toPreviousPrice = summaryPriceToStart + diagonPrice;
+            toTargetPrice = (Math.Abs((currentX + 1) - targetPointX) + Mathf.Abs((currentY - 1) - targetPointY)) * 10;
+            summaryPrices[7] = toPreviousPrice + toTargetPrice;
+            
 
             int lessFIndex = 0;
-            for (int i = 1; i < F.Length; i++)
+            for (int i = 1; i < summaryPrices.Length; i++)
             {
-                if (F[lessFIndex] > F[i]) lessFIndex = i;
+                if (summaryPrices[lessFIndex] > summaryPrices[i]) lessFIndex = i;
             }
-            
-            /*
-                0 | 1 | 2
-                3 |   | 4    F-indexes location
-                5 | 6 | 7
-            */
-            //Debug.Log(lessFIndex);
+
             switch (lessFIndex)
             {
                 case 0:
-                    Instantiate(BlockPrefab, new Vector3((currentX - 1), (currentY + 1)), Quaternion.identity);
-                    priceToStart += 14;
+                    Instantiate(blockPrefab, new Vector3((currentX - 1), (currentY + 1)), Quaternion.identity);
+                    summaryPriceToStart += diagonPrice;
                     currentX--;
                     currentY++;
                     break;
                 case 1:
-                    Instantiate(BlockPrefab, new Vector3(currentX, (currentY + 1)), Quaternion.identity);
-                    priceToStart += 10;
+                    Instantiate(blockPrefab, new Vector3(currentX, (currentY + 1)), Quaternion.identity);
+                    summaryPriceToStart += directPrice;
                     currentY++;
                     break;
                 case 2:
-                    Instantiate(BlockPrefab, new Vector3((currentX + 1), (currentY + 1)), Quaternion.identity);
-                    priceToStart += 14;
+                    Instantiate(blockPrefab, new Vector3((currentX + 1), (currentY + 1)), Quaternion.identity);
+                    summaryPriceToStart += diagonPrice;
                     currentX++;
                     currentY++;
                     break;
                 case 3:
-                    Instantiate(BlockPrefab, new Vector3((currentX - 1), currentY), Quaternion.identity);
-                    priceToStart += 10;
+                    Instantiate(blockPrefab, new Vector3((currentX - 1), currentY), Quaternion.identity);
+                    summaryPriceToStart += directPrice;
                     currentX--;
                     break;
                 case 4:
-                    Instantiate(BlockPrefab, new Vector3((currentX + 1), currentY), Quaternion.identity);
-                    priceToStart += 10;
+                    Instantiate(blockPrefab, new Vector3((currentX + 1), currentY), Quaternion.identity);
+                    summaryPriceToStart += directPrice;
                     currentX++;
                     break;
                 case 5:
-                    Instantiate(BlockPrefab, new Vector3((currentX - 1), (currentY - 1)), Quaternion.identity);
-                    priceToStart += 14;
+                    Instantiate(blockPrefab, new Vector3((currentX - 1), (currentY - 1)), Quaternion.identity);
+                    summaryPriceToStart += diagonPrice;
                     currentX--;
                     currentY--;
                     break;
                 case 6:
-                    Instantiate(BlockPrefab, new Vector3(currentX, (currentY - 1)), Quaternion.identity);
-                    priceToStart += 10;
+                    Instantiate(blockPrefab, new Vector3(currentX, (currentY - 1)), Quaternion.identity);
+                    summaryPriceToStart += directPrice;
                     currentY--;
                     break;
                 case 7:
-                    Instantiate(BlockPrefab, new Vector3((currentX + 1), (currentY - 1)), Quaternion.identity);
-                    priceToStart += 14;
+                    Instantiate(blockPrefab, new Vector3((currentX + 1), (currentY - 1)), Quaternion.identity);
+                    summaryPriceToStart += diagonPrice;
                     currentX++;
                     currentY--;
                     break;
                 default:
                     break;
             }
+        }
+    }
+
+    private void SpawnEnemies()
+    {
+        int i = 1;
+        while (i < levelSizeX)
+        {
+            Instantiate(enemyPrefab, new Vector3(i,levelSizeY),Quaternion.identity);
+            i += enemiesRareness;
         }
     }
 }
