@@ -65,8 +65,8 @@ public class Enemy : MonoBehaviour
         
         int layerMask = LayerMask.GetMask("Blocks");
         // Wall check{
-        Vector2 wallCheckDirection = moveDirection > 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, wallCheckDirection, this.enemySize, layerMask);
+        Vector2 forwardDiretion = moveDirection > 0 ? Vector2.right : Vector2.left;
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDiretion, this.enemySize, layerMask);
         
         if (hitWall.collider != null)
         {
@@ -79,6 +79,16 @@ public class Enemy : MonoBehaviour
         RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f, layerMask);
         
         if (hitFloor.collider == null)
+        {
+            this.moveDirection *= -1;
+        }
+        // }
+        
+
+        // Another enemies check{
+        RaycastHit2D hitEnemy = Physics2D.Raycast(transform.position, forwardDiretion, this.enemySize);
+        
+        if (hitEnemy.collider != null)
         {
             this.moveDirection *= -1;
         }
