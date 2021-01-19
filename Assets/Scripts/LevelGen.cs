@@ -15,6 +15,9 @@ public class LevelGen : MonoBehaviour
     public GameObject finishPrefab;
     public GameObject enemyPrefab;
     public GameObject playerPrefab;
+
+    public int startPoint;
+    public int finishPoint;
     
     private System.Random rnd = new System.Random();
     
@@ -22,8 +25,8 @@ public class LevelGen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int startPoint = MakeStartPoint();
-        int finishPoint = MakeFinishPoint();
+        startPoint = MakeStartPoint();
+        finishPoint = MakeFinishPoint();
         
         MakeLava();
         //MakeBorders();
