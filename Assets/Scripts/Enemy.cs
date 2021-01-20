@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
@@ -9,23 +10,107 @@ public class Enemy : MonoBehaviour
     public float weightMin = 1.0f;
     public float weightMax = 5.0f;
     
-    private Rigidbody2D _body;
-    private CircleCollider2D _enemyCollider;
-    private int enemyWeight;
+    private Rigidbody2D body;
+    
     private float enemySize;
+    private int enemyWeight;
     private int moveDirection;
     
-    // Start is called before the first frame update
     void Start()
     {
-        _body = GetComponent<Rigidbody2D>();
-        _enemyCollider = GetComponent<CircleCollider2D>();
+        body = GetComponent<Rigidbody2D>();
 
-        // Generation enemy stats{
+        Create();
+    }
+
+    void Update()
+    {
+        Moving();
+        ObstacleCheck();
+    }
+
+    private void Moving()
+    {
+        float deltaX = moveDirection * speed * Time.deltaTime;
+        Vector2 movement = new Vector2(deltaX, body.velocity.y);
+        body.velocity = movement;
+    }
+
+    private void ObstacleCheck()
+    {
+        if (FloorCheck() || WallCheck() || EnemyCheck())
+        {
+            this.moveDirection *= -1;
+        }
+    }
+
+    private bool EnemyCheck()
+    {
+        Vector2 forwardDirection = moveDirection > 0 ? Vector2.right : Vector2.left;
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, this.enemySize);
+        
+        if (hitWall.collider != null && hitWall.collider.CompareTag("Enemy"))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    private bool WallCheck()
+    {
+        Vector2 forwardDirection = moveDirection > 0 ? Vector2.right : Vector2.left;
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, this.enemySize);
+        
+        if (hitWall.collider != null && hitWall.collider.CompareTag("Wall"))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    private bool FloorCheck()
+    {
+        Vector2 floorCheckDirection = new Vector2(moveDirection > 0 ? 1.0f : -1.0f, -0.5f);
+        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f);
+
+        if (hitFloor.collider == null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    } 
+    
+    private void Create()
+    {
+        StatsGen();
+        
+        body.mass = this.enemyWeight;
+        transform.localScale = new Vector3(this.enemySize,this.enemySize);
+        moveDirection = 1;
+    }
+    
+    private void StatsGen()
+    {
         System.Random rnd = new System.Random();
-        int playerTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
+        int enemyTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
 
-        switch (playerTier)
+        SizeGen(enemyTier);
+        
+        this.enemyWeight = (int)Math.Round((((weightMax - weightMin) / 6) * enemyTier) + 1);
+    }
+
+    private void SizeGen(int tier)
+    {
+        switch (tier)
         {
             case 1: 
                 this.enemySize = 0.5f;
@@ -46,42 +131,5 @@ public class Enemy : MonoBehaviour
                 this.enemySize = 1.0f;
                 break;
         }
-        this.enemyWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
-        // }
-        
-        _body.mass = this.enemyWeight;
-        transform.localScale = new Vector3(this.enemySize,this.enemySize);
-        moveDirection = 1;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Enemy moving{
-        float deltaX = moveDirection * speed * Time.deltaTime; // Calculate power of velocity
-        Vector2 movement = new Vector2(deltaX, _body.velocity.y); // Make a new v2 for player velocity along X axis
-        _body.velocity = movement; // Assign new velocity value
-        // }
-        
-        // Wall or another enemy check{
-        Vector2 forwardDiretion = moveDirection > 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDiretion, this.enemySize);
-        
-        if (hitWall.collider != null && (hitWall.collider.CompareTag("Enemy") || hitWall.collider.CompareTag("Wall")))
-        {
-            this.moveDirection *= -1;
-        }
-        // }
-        
-        // Floor check{
-        Vector2 floorCheckDirection = new Vector2(moveDirection > 0 ? 1.0f : -1.0f, -0.5f);
-        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f);
-        
-        if (hitFloor.collider == null)
-        {
-            this.moveDirection *= -1;
-        }
-        // }
-    }
-    
 }

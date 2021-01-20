@@ -48,13 +48,13 @@ public class Player : MonoBehaviour
 
     private void Jumping()
     {
-        if (CheckGound() && Input.GetKeyDown(KeyCode.Space))
+        if (CheckGround() && Input.GetKeyDown(KeyCode.Space))
         {
             body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
 
-    private bool CheckGound()
+    private bool CheckGround()
     {
         var bounds = playerCollider.bounds;
         Vector3 max = bounds.max; 
@@ -89,7 +89,16 @@ public class Player : MonoBehaviour
     {
         System.Random rnd = new System.Random();
         int playerTier = rnd.Next(1,6); // Player size from 0.5f to 1.0f
-        switch (playerTier)
+        
+        SizeGen(playerTier);
+        
+        playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
+        playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
+    }
+
+    private void SizeGen(int tier)
+    {
+        switch (tier)
         {
             case 1: 
                 playerSize = 0.5f;
@@ -110,10 +119,8 @@ public class Player : MonoBehaviour
                 playerSize = 1.0f;
                 break;
         }
-        playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
-        playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
     }
-   
+    
     public void Respawn()
     {
         playerLives = playerFullLives;
