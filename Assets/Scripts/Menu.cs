@@ -56,7 +56,7 @@ public class Menu : MonoBehaviour
     {
         levelDone = false;
         Resume();
-        playerScript.playerRespawn();
+        playerScript.Respawn();
     }
 
     public void AnotherLevel()

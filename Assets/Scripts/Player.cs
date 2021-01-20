@@ -12,24 +12,81 @@ public class Player : MonoBehaviour
     public float weightMax = 5.0f;
     public float livesMin = 1.0f;
     public float livesMax = 3.0f;
-
-    private Rigidbody2D _body;
-    private CircleCollider2D _playerCollider;
+    
+    private Rigidbody2D body;
+    private CircleCollider2D playerCollider;
+    private Menu pauseMenu;
+    
     private int playerWeight;
     private int playerLives;
     private int playerFullLives;
     private int playerSpawnY;
     private float playerSize;
-    private Menu pauseMenu;
     
-    // Start is called before the first frame update
     void Start()
     {
-        _body = GetComponent<Rigidbody2D>();
-        _playerCollider = GetComponent<CircleCollider2D>();
+        body = GetComponent<Rigidbody2D>();
+        playerCollider = GetComponent<CircleCollider2D>();
         pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
 
-        // Generation player stats{
+        Create();
+    }
+
+    void Update()
+    {
+        Moving();
+        Jumping();
+        LivesCheck();
+    }
+
+    private void Moving()
+    {
+        float deltaX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+        Vector2 movement = new Vector2(deltaX, body.velocity.y);
+        body.velocity = movement;
+    }
+
+    private void Jumping()
+    {
+        if (CheckGound() && Input.GetKeyDown(KeyCode.Space))
+        {
+            body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+    }
+
+    private bool CheckGound()
+    {
+        var bounds = playerCollider.bounds;
+        Vector3 max = bounds.max; 
+        Vector3 min = bounds.min;
+        Vector2 corner1 = new Vector2(max.x, min.y - .1f);
+        Vector2 corner2 = new Vector2(min.x, min.y - .2f);
+        Collider2D hit = Physics2D.OverlapArea(corner1, corner2);
+
+        return false || hit != null;
+    }
+    
+    private void LivesCheck()
+    {
+        if (playerLives < 1)
+        {
+            gameObject.SetActive(false);
+            pauseMenu.LevelDone();
+        }
+    }
+    
+    private void Create()
+    {
+        StatsGen();
+        
+        playerFullLives = playerLives;
+        body.mass = playerWeight;
+        transform.localScale = new Vector3(playerSize,playerSize);
+        playerSpawnY = (int) gameObject.transform.position.y;
+    }
+
+    private void StatsGen()
+    {
         System.Random rnd = new System.Random();
         int playerTier = rnd.Next(1,6); // Player size from 0.5f to 1.0f
         switch (playerTier)
@@ -55,49 +112,9 @@ public class Player : MonoBehaviour
         }
         playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
         playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
-        playerFullLives = playerLives;
-        // }
-        
-        _body.mass = playerWeight;
-        transform.localScale = new Vector3(playerSize,playerSize);
-        playerSpawnY = (int) gameObject.transform.position.y;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Player moving{
-        float deltaX = Input.GetAxis("Horizontal") * speed * Time.deltaTime; // Calculate power of velocity
-        Vector2 movement = new Vector2(deltaX, _body.velocity.y); // Make a new v2 for player velocity along X axis
-        _body.velocity = movement; // Assign new velocity value
-        // }
-
-        // Player grounded checking{
-        Vector3 max = _playerCollider.bounds.max; 
-        Vector3 min = _playerCollider.bounds.min;
-        Vector2 corner1 = new Vector2(max.x, min.y - .1f);
-        Vector2 corner2 = new Vector2(min.x, min.y - .2f);
-        Collider2D hit = Physics2D.OverlapArea(corner1, corner2);
-
-        bool grounded = false || hit != null;
-        
-        if (grounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            _body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        }
-        // }
-        
-        // Player lives check
-        if (playerLives < 1)
-        {
-            gameObject.SetActive(false);
-            pauseMenu.LevelDone();
-        }
-        // }
-        
-    }
-
-    public void playerRespawn()
+   
+    public void Respawn()
     {
         playerLives = playerFullLives;
         gameObject.transform.position = new Vector3(0, playerSpawnY + 1);
@@ -113,7 +130,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            _body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             playerLives--;
         } else if (collision.gameObject.CompareTag("Death"))
         {
