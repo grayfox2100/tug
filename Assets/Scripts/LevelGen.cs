@@ -10,14 +10,14 @@ public class LevelGen : MonoBehaviour
     public int pointStepX = 7;
     public int pathsRareness = 4;
     public int enemiesRareness = 4;
+    public int startPoint;
+    public int finishPoint;  
+    
     public GameObject lavaPrefab;
     public GameObject blockPrefab;
     public GameObject finishPrefab;
     public GameObject enemyPrefab;
     public GameObject playerPrefab;
-
-    public int startPoint;
-    public int finishPoint;
     
     private System.Random rnd = new System.Random();
     
@@ -29,7 +29,6 @@ public class LevelGen : MonoBehaviour
         finishPoint = MakeFinishPoint();
         
         MakeLava();
-        //MakeBorders();
         for (int i = 0; i < (levelSizeY / pathsRareness); i++)
         {
             MakePath(startPoint, finishPoint);
@@ -63,25 +62,6 @@ public class LevelGen : MonoBehaviour
         for (int x = -5; x < (levelSizeX + 5); x++)
         {
             Instantiate(lavaPrefab, new Vector3(x,1),Quaternion.identity);
-        }
-    }
-
-    private void MakeBorders()
-    {
-        for (int y = 0; y < (levelSizeY + 2); y++)
-        {
-            if (y == 0 || y == (levelSizeY + 1))
-            {
-                for (int x = 0; x < (levelSizeX + 2); x++)
-                {
-                    Instantiate(blockPrefab, new Vector3(x,y),Quaternion.identity); // Vertical borders
-                }
-            }
-            else
-            {
-                Instantiate(blockPrefab, new Vector3(0, y),Quaternion.identity); // Lower horizontal border
-                Instantiate(blockPrefab, new Vector3((levelSizeX + 1), y),Quaternion.identity); // Upper horizontal border
-            }
         }
     }
     
@@ -226,7 +206,7 @@ public class LevelGen : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        int i = 1;
+        int i = 2;
         while (i < levelSizeX)
         {
             Instantiate(enemyPrefab, new Vector3(i,levelSizeY),Quaternion.identity);

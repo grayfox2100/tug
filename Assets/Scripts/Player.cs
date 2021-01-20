@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -16,15 +17,19 @@ public class Player : MonoBehaviour
     private CircleCollider2D _playerCollider;
     private int playerWeight;
     private int playerLives;
+    private int playerFullLives;
+    private int playerSpawnY;
     private float playerSize;
+    private Menu pauseMenu;
     
     // Start is called before the first frame update
     void Start()
     {
         _body = GetComponent<Rigidbody2D>();
         _playerCollider = GetComponent<CircleCollider2D>();
+        pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
 
-       // Generation player stats{
+        // Generation player stats{
         System.Random rnd = new System.Random();
         int playerTier = rnd.Next(1,6); // Player size from 0.5f to 1.0f
         switch (playerTier)
@@ -50,10 +55,12 @@ public class Player : MonoBehaviour
         }
         playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
         playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
+        playerFullLives = playerLives;
         // }
         
         _body.mass = playerWeight;
         transform.localScale = new Vector3(playerSize,playerSize);
+        playerSpawnY = (int) gameObject.transform.position.y;
     }
 
     // Update is called once per frame
@@ -81,13 +88,25 @@ public class Player : MonoBehaviour
         // }
         
         // Player lives check
-        if (playerLives < 0)
+        if (playerLives < 1)
         {
-            Destroy(gameObject);
-            Debug.Log("You Died!");
+            gameObject.SetActive(false);
+            pauseMenu.LevelDone();
         }
         // }
         
+    }
+
+    public void playerRespawn()
+    {
+        playerLives = playerFullLives;
+        gameObject.transform.position = new Vector3(0, playerSpawnY + 1);
+        gameObject.SetActive(true);
+    }
+    
+    private void OnGUI()
+    {
+        GUI.Label(new Rect(50,50,250,250), "Lives: " + playerLives );
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -96,17 +115,13 @@ public class Player : MonoBehaviour
         {
             _body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             playerLives--;
-            Debug.Log("Player recive damage! Lives left: " + playerLives);
         } else if (collision.gameObject.CompareTag("Death"))
         {
-            Destroy(gameObject);
-            Debug.Log("You Died!");
+            gameObject.SetActive(false);
+            pauseMenu.LevelDone();
         } else if (collision.gameObject.CompareTag("Finish"))
         {
-            Menu pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
             pauseMenu.LevelDone();
-            //Destroy(gameObject);
-            //Debug.Log("You Died! But win.");
         }
     }
 }

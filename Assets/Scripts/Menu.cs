@@ -10,6 +10,12 @@ public class Menu : MonoBehaviour
     private static bool levelDone = false;
     public GameObject PauseMenuUI;
     public GameObject ResumeButton;
+    private Player playerScript;
+    
+    private void Start()
+    {
+        playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+    }
 
     void Update()
     {
@@ -50,15 +56,7 @@ public class Menu : MonoBehaviour
     {
         levelDone = false;
         Resume();
-        
-        GameObject player = GameObject.FindWithTag("Player");
-        GameObject levelGen = GameObject.Find("LevelGen");
-
-        if (player != null && levelGen != null)
-        {
-            int playerStartY = levelGen.GetComponent<LevelGen>().startPoint;
-            player.transform.position = new Vector3(0, playerStartY + 1);
-        }
+        playerScript.playerRespawn();
     }
 
     public void AnotherLevel()
@@ -71,5 +69,10 @@ public class Menu : MonoBehaviour
     public void LevelDone()
     {
         levelDone = true;
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 }

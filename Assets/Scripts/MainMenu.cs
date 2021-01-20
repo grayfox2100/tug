@@ -7,7 +7,6 @@ public class MainMenu : MonoBehaviour
 {
     public void NewGame()
     {
-        Debug.Log("Vdas");
         SceneManager.LoadScene("SampleScene");
     }
 }
