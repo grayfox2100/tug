@@ -8,10 +8,10 @@ public class LevelGen : MonoBehaviour
     public int levelSizeX = 32;
     public int levelSizeY = 8;
     public int pointStepX = 7;
-    public int pathsRareness = 4;
-    public int enemiesRareness = 4;
-    public int startPoint;
-    public int finishPoint;  
+    public int numberOfPaths = 4;
+    public int numberOfEnemies = 4;
+    private int _startPoint;
+    private int _finishPoint;  
     
     public GameObject lavaPrefab;
     public GameObject blockPrefab;
@@ -19,25 +19,27 @@ public class LevelGen : MonoBehaviour
     public GameObject enemyPrefab;
     public GameObject playerPrefab;
     
-    private System.Random rnd = new System.Random();
+    private System.Random _rnd = new System.Random();
 
     void Start()
     {
-        startPoint = MakeExtremePoint();
-        finishPoint = MakeExtremePoint(true);
+        _startPoint = MakeExtremePoint();
+        _finishPoint = MakeExtremePoint(true);
         
         MakeLava();
-        for (int i = 0; i < (levelSizeY / pathsRareness); i++)
+        
+        for (int i = 0; i < numberOfPaths; i++)
         {
-            MakePath(startPoint, finishPoint);
+            MakePath();
         }
+        
         SpawnEnemies();
-        SpawnPlayer(startPoint);
+        SpawnPlayer();
     }
 
     private int MakeExtremePoint(bool isFinish = false)
     {
-        int pointY = rnd.Next(2, (levelSizeY - 1));
+        int pointY = _rnd.Next(2, (levelSizeY - 1));
         
         if (isFinish)
         {
@@ -59,16 +61,16 @@ public class LevelGen : MonoBehaviour
         }
     }
     
-    private void MakePath(int startPoint, int finishPoint)
+    private void MakePath()
     {
         int previousPointX = 0;
-        int previousPointY = startPoint;
+        int previousPointY = _startPoint;
         int currentPointX = pointStepX;
         int currentPointY;
 
         while (currentPointX < (levelSizeX - pointStepX))
         {
-            currentPointY = rnd.Next(2, (levelSizeY - 1));
+            currentPointY = _rnd.Next(2, (levelSizeY - 1));
             Instantiate(blockPrefab, new Vector3(currentPointX, currentPointY),Quaternion.identity);
             
             // Make route to point {
@@ -81,7 +83,7 @@ public class LevelGen : MonoBehaviour
         }
         
         // Make route to finish {
-        MakeRouteToPoint(previousPointX, previousPointY, (levelSizeX - 1), finishPoint);
+        MakeRouteToPoint(previousPointX, previousPointY, (levelSizeX - 1), _finishPoint);
         // }
     }
     
@@ -200,16 +202,20 @@ public class LevelGen : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        int i = 2;
-        while (i < levelSizeX)
+        if (numberOfEnemies > 0)
         {
-            Instantiate(enemyPrefab, new Vector3(i,levelSizeY),Quaternion.identity);
-            i += enemiesRareness;
-        }
+            int enemiesFrequency = (levelSizeX / numberOfEnemies);
+            int i = 2;
+            while (i < levelSizeX)
+            {
+                Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
+                i += enemiesFrequency;
+            }
+        } else return;
     }
     
-    private void SpawnPlayer(int startPoint)
+    private void SpawnPlayer()
     {
-        Instantiate(playerPrefab, new Vector3(0,startPoint + 1),Quaternion.identity);
+        Instantiate(playerPrefab, new Vector3(0,_startPoint + 1),Quaternion.identity);
     }
 }
