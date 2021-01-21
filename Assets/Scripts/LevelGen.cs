@@ -39,7 +39,7 @@ public class LevelGen : MonoBehaviour
 
     private int MakeExtremePoint(bool isFinish = false)
     {
-        int pointY = _rnd.Next(2, (levelSizeY - 1));
+        int pointY = _rnd.Next(1, levelSizeY);
         
         if (isFinish)
         {
@@ -57,7 +57,7 @@ public class LevelGen : MonoBehaviour
     {
         for (int x = -5; x < (levelSizeX + 5); x++)
         {
-            Instantiate(lavaPrefab, new Vector3(x,1),Quaternion.identity);
+            Instantiate(lavaPrefab, new Vector3(x,0),Quaternion.identity);
         }
     }
     
@@ -70,21 +70,17 @@ public class LevelGen : MonoBehaviour
 
         while (currentPointX < (levelSizeX - pointStepX))
         {
-            currentPointY = _rnd.Next(2, (levelSizeY - 1));
+            currentPointY = _rnd.Next(1, levelSizeY);
             Instantiate(blockPrefab, new Vector3(currentPointX, currentPointY),Quaternion.identity);
             
-            // Make route to point {
             MakeRouteToPoint(previousPointX, previousPointY, currentPointX, currentPointY);
-            // }
 
             previousPointX = currentPointX;
             previousPointY = currentPointY;
             currentPointX += pointStepX;
         }
         
-        // Make route to finish {
         MakeRouteToPoint(previousPointX, previousPointY, (levelSizeX - 1), _finishPoint);
-        // }
     }
     
     private void MakeRouteToPoint(int startPointX, int startPointY, int targetPointX, int targetPointY)
