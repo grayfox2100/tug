@@ -84,8 +84,8 @@ public class Player : Characters
         int playerTier = rnd.Next(1,6); // Player size from 0.5f to 1.0f
         
         playerSize = SizeGen(playerTier);
-        playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
-        playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
+        playerWeight = tierBasedGen(playerTier, weightMin, weightMax);
+        playerLives = tierBasedGen(playerTier, livesMin, livesMax);
     }
     
     public void Respawn()

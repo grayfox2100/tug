@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public interface IMoving
 {
@@ -38,5 +39,10 @@ public class Characters : MonoBehaviour
     {
         const float baseSize = 0.4f;
         return baseSize + (tier * 0.1f);
+    }
+
+    public int tierBasedGen(int tier, float min, float max)
+    {
+        return (int)Math.Round((((max - min) / 6) * tier) + 1);
     }
 }

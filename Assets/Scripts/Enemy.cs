@@ -97,6 +97,6 @@ public class Enemy : Characters
         int enemyTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
 
         enemySize = SizeGen(enemyTier);
-        enemyWeight = (int)Math.Round((((weightMax - weightMin) / 6) * enemyTier) + 1);
+        enemyWeight = tierBasedGen(enemyTier, weightMin, weightMax);
     }
 }
