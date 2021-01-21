@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Characters
 {
     public float speed = 500.0f;
     public float weightMin = 1.0f;
@@ -19,35 +19,28 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-
+        moveDirection = 1;
         Create();
     }
 
     void Update()
     {
-        Moving();
+        Moving(new EnemyMoving(), moveDirection, speed, body);
         ObstacleCheck();
     }
-
-    private void Moving()
-    {
-        float deltaX = moveDirection * speed * Time.deltaTime;
-        Vector2 movement = new Vector2(deltaX, body.velocity.y);
-        body.velocity = movement;
-    }
-
+    
     private void ObstacleCheck()
     {
         if (FloorCheck() || WallCheck() || EnemyCheck())
         {
-            this.moveDirection *= -1;
+            moveDirection *= -1;
         }
     }
 
     private bool EnemyCheck()
     {
         Vector2 forwardDirection = moveDirection > 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, this.enemySize);
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, enemySize);
         
         if (hitWall.collider != null && hitWall.collider.CompareTag("Enemy"))
         {
@@ -62,7 +55,7 @@ public class Enemy : MonoBehaviour
     private bool WallCheck()
     {
         Vector2 forwardDirection = moveDirection > 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, this.enemySize);
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, enemySize);
         
         if (hitWall.collider != null && hitWall.collider.CompareTag("Wall"))
         {
@@ -77,7 +70,7 @@ public class Enemy : MonoBehaviour
     private bool FloorCheck()
     {
         Vector2 floorCheckDirection = new Vector2(moveDirection > 0 ? 1.0f : -1.0f, -0.5f);
-        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, this.enemySize + 0.25f);
+        RaycastHit2D hitFloor = Physics2D.Raycast(transform.position, floorCheckDirection, enemySize + 0.25f);
 
         if (hitFloor.collider == null)
         {
@@ -93,8 +86,8 @@ public class Enemy : MonoBehaviour
     {
         StatsGen();
         
-        body.mass = this.enemyWeight;
-        transform.localScale = new Vector3(this.enemySize,this.enemySize);
+        body.mass = enemyWeight;
+        transform.localScale = new Vector3(enemySize,enemySize);
         moveDirection = 1;
     }
     
@@ -103,33 +96,7 @@ public class Enemy : MonoBehaviour
         System.Random rnd = new System.Random();
         int enemyTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
 
-        SizeGen(enemyTier);
-        
-        this.enemyWeight = (int)Math.Round((((weightMax - weightMin) / 6) * enemyTier) + 1);
-    }
-
-    private void SizeGen(int tier)
-    {
-        switch (tier)
-        {
-            case 1: 
-                this.enemySize = 0.5f;
-                break;            
-            case 2: 
-                this.enemySize = 0.6f;
-                break;            
-            case 3: 
-                this.enemySize = 0.7f;
-                break;            
-            case 4: 
-                this.enemySize = 0.8f;
-                break;            
-            case 5: 
-                this.enemySize = 0.9f;
-                break;
-            default:
-                this.enemySize = 1.0f;
-                break;
-        }
+        enemySize = SizeGen(enemyTier);
+        enemyWeight = (int)Math.Round((((weightMax - weightMin) / 6) * enemyTier) + 1);
     }
 }

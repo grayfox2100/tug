@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player : Characters
 {
     public float speed = 500.0f;
     public float jumpForce = 12.0f;
@@ -34,18 +34,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Moving();
+        Moving(new PlayerMoving(), Input.GetAxis("Horizontal"), speed, body);
         Jumping();
         LivesCheck();
     }
-
-    private void Moving()
-    {
-        float deltaX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        Vector2 movement = new Vector2(deltaX, body.velocity.y);
-        body.velocity = movement;
-    }
-
+    
     private void Jumping()
     {
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space))
@@ -90,35 +83,9 @@ public class Player : MonoBehaviour
         System.Random rnd = new System.Random();
         int playerTier = rnd.Next(1,6); // Player size from 0.5f to 1.0f
         
-        SizeGen(playerTier);
-        
+        playerSize = SizeGen(playerTier);
         playerWeight = (int)Math.Round((((weightMax - weightMin) / 6) * playerTier) + 1);
         playerLives = (int)Math.Round((((livesMax - livesMin) / 6) * playerTier) + 1);
-    }
-
-    private void SizeGen(int tier)
-    {
-        switch (tier)
-        {
-            case 1: 
-                playerSize = 0.5f;
-                break;            
-            case 2: 
-                playerSize = 0.6f;
-                break;            
-            case 3: 
-                playerSize = 0.7f;
-                break;            
-            case 4: 
-                playerSize = 0.8f;
-                break;            
-            case 5: 
-                playerSize = 0.9f;
-                break;
-            default:
-                playerSize = 1.0f;
-                break;
-        }
     }
     
     public void Respawn()
