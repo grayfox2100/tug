@@ -20,13 +20,11 @@ public class LevelGen : MonoBehaviour
     public GameObject playerPrefab;
     
     private System.Random rnd = new System.Random();
-    
-    
-    // Start is called before the first frame update
+
     void Start()
     {
-        startPoint = MakeStartPoint();
-        finishPoint = MakeFinishPoint();
+        startPoint = MakeExtremePoint();
+        finishPoint = MakeExtremePoint(true);
         
         MakeLava();
         for (int i = 0; i < (levelSizeY / pathsRareness); i++)
@@ -37,26 +35,22 @@ public class LevelGen : MonoBehaviour
         SpawnPlayer(startPoint);
     }
 
-    // Update is called once per frame
-    void Update()
+    private int MakeExtremePoint(bool isFinish = false)
     {
+        int pointY = rnd.Next(2, (levelSizeY - 1));
         
-    }
+        if (isFinish)
+        {
+            Instantiate(finishPrefab, new Vector3(levelSizeX, pointY),Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(blockPrefab, new Vector3(0, pointY),Quaternion.identity);
+        }
 
-    private int MakeStartPoint()
-    {
-        int startPointY = rnd.Next(2, (levelSizeY - 1));
-        Instantiate(blockPrefab, new Vector3(0, startPointY),Quaternion.identity);
-        return startPointY;
+        return pointY;
     }
-
-    private int MakeFinishPoint()
-    {
-        int finishPointY = rnd.Next(2, (levelSizeY - 1));
-        Instantiate(finishPrefab, new Vector3(levelSizeX, finishPointY),Quaternion.identity);
-        return finishPointY;
-    }
-
+    
     private void MakeLava()
     {
         for (int x = -5; x < (levelSizeX + 5); x++)
