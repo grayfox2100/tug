@@ -28,8 +28,8 @@ public class Player : Characters
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<CircleCollider2D>();
         pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
-
-        Create();
+        playerSpawnY = (int) gameObject.transform.position.y;
+        StatsGen();
     }
 
     void Update()
@@ -68,22 +68,13 @@ public class Player : Characters
         }
     }
     
-    private void Create()
-    {
-        StatsGen();
-        
-        playerFullLives = playerLives;
-        body.mass = playerWeight;
-        transform.localScale = new Vector3(playerSize,playerSize);
-        playerSpawnY = (int) gameObject.transform.position.y;
-    }
-
     private void StatsGen()
     {
         int playerTier = TierGen();
         playerSize = SizeGen(playerTier);
-        playerWeight = TierBasedGen(playerTier, weightMin, weightMax);
-        playerLives = TierBasedGen(playerTier, livesMin, livesMax);
+        transform.localScale = new Vector3(playerSize,playerSize);
+        body.mass = TierBasedGen(playerTier, weightMin, weightMax);
+        playerFullLives = playerLives = TierBasedGen(playerTier, livesMin, livesMax);
     }
     
     public void Respawn()

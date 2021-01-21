@@ -14,13 +14,12 @@ public class Enemy : Characters
     
     private float enemySize;
     private int enemyWeight;
-    private int moveDirection;
+    private int moveDirection = 1;
     
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-        moveDirection = 1;
-        Create();
+        StatsGen();
     }
 
     void Update()
@@ -82,19 +81,11 @@ public class Enemy : Characters
         }
     } 
     
-    private void Create()
-    {
-        StatsGen();
-        
-        body.mass = enemyWeight;
-        transform.localScale = new Vector3(enemySize,enemySize);
-        moveDirection = 1;
-    }
-    
     private void StatsGen()
     {
         int enemyTier = TierGen();
         enemySize = SizeGen(enemyTier);
-        enemyWeight = TierBasedGen(enemyTier, weightMin, weightMax);
+        transform.localScale = new Vector3(enemySize,enemySize);
+        body.mass = TierBasedGen(enemyTier, weightMin, weightMax);
     }
 }
