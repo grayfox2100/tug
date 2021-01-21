@@ -34,6 +34,12 @@ public class Characters : MonoBehaviour
     {
         moving.DoMoving(direction, speed, body);
     }
+
+    public int TierGen()
+    {
+        System.Random rnd = new System.Random();
+        return rnd.Next(1,6); // Count of tiers depends on size (0.5f to 1.0f)
+    }
     
     public float SizeGen(int tier)
     {
@@ -41,7 +47,7 @@ public class Characters : MonoBehaviour
         return baseSize + (tier * 0.1f);
     }
 
-    public int tierBasedGen(int tier, float min, float max)
+    public int TierBasedGen(int tier, float min, float max)
     {
         return (int)Math.Round((((max - min) / 6) * tier) + 1);
     }

@@ -93,10 +93,8 @@ public class Enemy : Characters
     
     private void StatsGen()
     {
-        System.Random rnd = new System.Random();
-        int enemyTier = rnd.Next(1,6); // Enemy size from 0.5f to 1.0f
-
+        int enemyTier = TierGen();
         enemySize = SizeGen(enemyTier);
-        enemyWeight = tierBasedGen(enemyTier, weightMin, weightMax);
+        enemyWeight = TierBasedGen(enemyTier, weightMin, weightMax);
     }
 }

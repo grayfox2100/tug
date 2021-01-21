@@ -80,12 +80,10 @@ public class Player : Characters
 
     private void StatsGen()
     {
-        System.Random rnd = new System.Random();
-        int playerTier = rnd.Next(1,6); // Player size from 0.5f to 1.0f
-        
+        int playerTier = TierGen();
         playerSize = SizeGen(playerTier);
-        playerWeight = tierBasedGen(playerTier, weightMin, weightMax);
-        playerLives = tierBasedGen(playerTier, livesMin, livesMax);
+        playerWeight = TierBasedGen(playerTier, weightMin, weightMax);
+        playerLives = TierBasedGen(playerTier, livesMin, livesMax);
     }
     
     public void Respawn()
