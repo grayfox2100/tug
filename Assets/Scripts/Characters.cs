@@ -30,24 +30,24 @@ class PlayerMoving : IMoving
 
 public class Characters : MonoBehaviour
 {
-    public void Moving(IMoving moving, float direction, float speed, Rigidbody2D body)
+    protected void Moving(IMoving moving, float direction, float speed, Rigidbody2D body)
     {
         moving.DoMoving(direction, speed, body);
     }
 
-    public int TierGen()
+    protected int TierGen()
     {
         System.Random rnd = new System.Random();
         return rnd.Next(1,6); // Count of tiers depends on size (0.5f to 1.0f)
     }
-    
-    public float SizeGen(int tier)
+
+    protected float SizeGen(int tier)
     {
         const float baseSize = 0.4f;
         return baseSize + (tier * 0.1f);
     }
 
-    public int TierBasedGen(int tier, float min, float max)
+    protected int TierBasedGen(int tier, float min, float max)
     {
         return (int)Math.Round((((max - min) / 6) * tier) + 1);
     }

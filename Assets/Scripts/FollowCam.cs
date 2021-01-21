@@ -5,17 +5,11 @@ public class FollowCam : MonoBehaviour {
 	public float smoothTime = 0.2f;
 	private Vector3 _velocity = Vector3.zero;
 	
-	void Start()
-	{
-		
-	}
-	
 	void Update()
 	{
-		//Debug.Log();
 		GameObject camTarget = GameObject.FindWithTag("Player");
 		Vector3 targetPosition;
-		//Debug.Log(camTarget);
+
 		if (camTarget != null)
 		{
 			targetPosition = new Vector3(camTarget.transform.position.x, camTarget.transform.position.y, transform.position.z);
