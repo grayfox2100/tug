@@ -3,31 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-/*public interface IMoving
-{
-    //void DoMoving(float direction, float speed, Rigidbody2D body);
-}
-
-class EnemyMoving : IMoving
-{
-    /*public void DoMoving(float direction, float speed, Rigidbody2D body)
-    {
-        float deltaX = direction * speed * Time.deltaTime;
-        Vector2 movement = new Vector2(deltaX, body.velocity.y);
-        body.velocity = movement;
-    }#1#
-}
-
-class PlayerMoving : IMoving
-{
-    /*public void DoMoving(float direction, float speed, Rigidbody2D body)
-    {
-        float deltaX = direction * speed * Time.deltaTime; 
-        Vector2 movement = new Vector2(deltaX, body.velocity.y);
-        body.velocity = movement;
-    }#1#
-}*/
-
 public class Characters : MonoBehaviour
 {
     public float speed = 500.0f;
@@ -39,14 +14,6 @@ public class Characters : MonoBehaviour
     public Rigidbody2D body;
     public IMoving mover;
     
-
-    /*protected void Moving(float direction, float speed, Rigidbody2D body)
-    {
-        float deltaX = direction * speed * Time.deltaTime; 
-        Vector2 movement = new Vector2(deltaX, body.velocity.y);
-        body.velocity = movement;
-    }*/
-
     protected int TierGen()
     {
         System.Random rnd = new System.Random();
