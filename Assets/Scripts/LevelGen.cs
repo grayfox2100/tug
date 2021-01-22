@@ -26,13 +26,12 @@ public class LevelGen : MonoBehaviour
         _startPoint = MakeExtremePoint();
         _finishPoint = MakeExtremePoint(true);
         
-        MakeLava();
-        
         for (int i = 0; i < numberOfPaths; i++)
         {
             MakePath();
         }
         
+        MakeLava();
         SpawnEnemies();
         SpawnPlayer();
     }
@@ -66,11 +65,10 @@ public class LevelGen : MonoBehaviour
         int previousPointX = 0;
         int previousPointY = _startPoint;
         int currentPointX = pointStepX;
-        int currentPointY;
 
         while (currentPointX < (levelSizeX - pointStepX))
         {
-            currentPointY = _rnd.Next(1, levelSizeY);
+            int currentPointY = _rnd.Next(1, levelSizeY);
             Instantiate(blockPrefab, new Vector3(currentPointX, currentPointY),Quaternion.identity);
             
             MakeRouteToPoint(previousPointX, previousPointY, currentPointX, currentPointY);

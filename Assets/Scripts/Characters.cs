@@ -3,37 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public interface IMoving
+/*public interface IMoving
 {
-    void DoMoving(float direction, float speed, Rigidbody2D body);
+    //void DoMoving(float direction, float speed, Rigidbody2D body);
 }
 
 class EnemyMoving : IMoving
 {
-    public void DoMoving(float direction, float speed, Rigidbody2D body)
+    /*public void DoMoving(float direction, float speed, Rigidbody2D body)
     {
         float deltaX = direction * speed * Time.deltaTime;
         Vector2 movement = new Vector2(deltaX, body.velocity.y);
         body.velocity = movement;
-    }
+    }#1#
 }
 
 class PlayerMoving : IMoving
 {
-    public void DoMoving(float direction, float speed, Rigidbody2D body)
+    /*public void DoMoving(float direction, float speed, Rigidbody2D body)
     {
         float deltaX = direction * speed * Time.deltaTime; 
         Vector2 movement = new Vector2(deltaX, body.velocity.y);
         body.velocity = movement;
-    }
-}
+    }#1#
+}*/
 
 public class Characters : MonoBehaviour
 {
-    protected void Moving(IMoving moving, float direction, float speed, Rigidbody2D body)
+    public float speed = 500.0f;
+    public float jumpForce = 12.0f;
+    public float weightMin = 1.0f;
+    public float weightMax = 5.0f;
+    public int tier;
+    public float size;
+    public Rigidbody2D body;
+    public IMoving mover;
+    
+
+    /*protected void Moving(float direction, float speed, Rigidbody2D body)
     {
-        moving.DoMoving(direction, speed, body);
-    }
+        float deltaX = direction * speed * Time.deltaTime; 
+        Vector2 movement = new Vector2(deltaX, body.velocity.y);
+        body.velocity = movement;
+    }*/
 
     protected int TierGen()
     {
@@ -50,5 +62,28 @@ public class Characters : MonoBehaviour
     protected int TierBasedGen(int tier, float min, float max)
     {
         return (int)Math.Round((((max - min) / 6) * tier) + 1);
+    }
+
+    private void Start()
+    {
+        if (gameObject.CompareTag("Player"))
+        {
+            mover = new PlayerMoving();
+        }
+        else
+        {
+            mover = new EnemyMoving();
+        }
+        
+        body = GetComponent<Rigidbody2D>();
+        tier = TierGen();
+        body.mass = TierBasedGen(tier, weightMin, weightMax);
+        size = SizeGen(tier);
+        transform.localScale = new Vector3(size,size);
+    }
+
+    private void Update()
+    {
+        mover.DoMoving(gameObject, this);
     }
 }

@@ -6,36 +6,36 @@ using UnityEngine.AI;
 
 public class Enemy : Characters
 {
-    public float speed = 500.0f;
-    public float weightMin = 1.0f;
-    public float weightMax = 5.0f;
+    //public float speed = 500.0f;
+    //public float weightMin = 1.0f;
+    //public float weightMax = 5.0f;
     
-    private Rigidbody2D _body;
-    private float _enemySize;
-    private int _enemyWeight;
-    private int _moveDirection = 1;
+    //private Rigidbody2D _body;
+    //private float _enemySize;
+    //private int _enemyWeight;
+    //private int _moveDirection = 1;
     
-    void Start()
+    /*void Start()
     {
-        _body = GetComponent<Rigidbody2D>();
-        StatsGen();
-    }
+        //_body = GetComponent<Rigidbody2D>();
+        //StatsGen();
+    }*/
 
-    void Update()
+    /*void Update()
     {
-        Moving(new EnemyMoving(), _moveDirection, speed, _body);
+        Moving(_moveDirection, speed, _body);
         ObstacleCheck();
-    }
+    }*/
     
-    private void ObstacleCheck()
+    /*private void ObstacleCheck()
     {
         if (FloorCheck() || WallCheck() || EnemyCheck())
         {
             _moveDirection *= -1;
         }
-    }
+    }*/
 
-    private bool EnemyCheck()
+    /*private bool EnemyCheck()
     {
         Vector2 forwardDirection = _moveDirection > 0 ? Vector2.right : Vector2.left;
         RaycastHit2D hitWall = Physics2D.Raycast(transform.position, forwardDirection, _enemySize);
@@ -78,13 +78,13 @@ public class Enemy : Characters
         {
             return false;
         }
-    } 
+    } */
     
-    private void StatsGen()
+    /*private void StatsGen()
     {
-        int enemyTier = TierGen();
-        _enemySize = SizeGen(enemyTier);
-        transform.localScale = new Vector3(_enemySize,_enemySize);
-        _body.mass = TierBasedGen(enemyTier, weightMin, weightMax);
-    }
+        //int enemyTier = TierGen();
+        //_enemySize = SizeGen(enemyTier);
+        //transform.localScale = new Vector3(_enemySize,_enemySize);
+        //_body.mass = TierBasedGen(enemyTier, weightMin, weightMax);
+    }*/
 }

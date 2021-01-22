@@ -6,39 +6,44 @@ using UnityEngine.UI;
 
 public class Player : Characters
 {
-    public float speed = 500.0f;
-    public float jumpForce = 12.0f;
-    public float weightMin = 1.0f;
-    public float weightMax = 5.0f;
+    //public float speed = 500.0f;
+    //public float jumpForce = 12.0f;
+    //public float weightMin = 1.0f;
+    //public float weightMax = 5.0f;
     public float livesMin = 1.0f;
     public float livesMax = 3.0f;
     
-    private Rigidbody2D _body;
-    private CircleCollider2D _playerCollider;
+    //private CircleCollider2D _playerCollider;
     private Menu _pauseMenu;
-    private int _playerWeight;
+    //private int _playerWeight;
     private int _playerLives;
     private int _playerFullLives;
     private int _playerSpawnY;
-    private float _playerSize;
+    //private float _playerSize;
     
     void Start()
     {
-        _body = GetComponent<Rigidbody2D>();
-        _playerCollider = GetComponent<CircleCollider2D>();
+        //_body = GetComponent<Rigidbody2D>();
+        //_playerCollider = GetComponent<CircleCollider2D>();
         _pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
         _playerSpawnY = (int) gameObject.transform.position.y;
-        StatsGen();
+        _playerFullLives = _playerLives = TierBasedGen(tier, livesMin, livesMax);
+        //StatsGen();
     }
 
     void Update()
     {
-        Moving(new PlayerMoving(), Input.GetAxis("Horizontal"), speed, _body);
-        Jumping();
-        LivesCheck();
+        /*Moving(Input.GetAxis("Horizontal"), speed, _body);
+        Jumping();*/
+        //LivesCheck();
+        if (_playerLives < 1)
+        {
+            gameObject.SetActive(false);
+            _pauseMenu.LevelDone();
+        }
     }
     
-    private void Jumping()
+    /*private void Jumping()
     {
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space))
         {
@@ -56,25 +61,25 @@ public class Player : Characters
         Collider2D hit = Physics2D.OverlapArea(corner1, corner2);
 
         return false || hit != null;
-    }
+    }*/
     
-    private void LivesCheck()
+    /*private void LivesCheck()
     {
         if (_playerLives < 1)
         {
             gameObject.SetActive(false);
             _pauseMenu.LevelDone();
         }
-    }
+    }*/
     
-    private void StatsGen()
+    /*private void StatsGen()
     {
-        int playerTier = TierGen();
-        _playerSize = SizeGen(playerTier);
-        transform.localScale = new Vector3(_playerSize,_playerSize);
-        _body.mass = TierBasedGen(playerTier, weightMin, weightMax);
-        _playerFullLives = _playerLives = TierBasedGen(playerTier, livesMin, livesMax);
-    }
+        /#1#/int playerTier = TierGen();
+        //_playerSize = SizeGen(playerTier);
+        //transform.localScale = new Vector3(_playerSize,_playerSize);
+        //_body.mass = TierBasedGen(playerTier, weightMin, weightMax);#1#
+        _playerFullLives = _playerLives = TierBasedGen(tier, livesMin, livesMax);
+    }*/
     
     public void Respawn()
     {
@@ -92,7 +97,7 @@ public class Player : Characters
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            _body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             _playerLives--;
         } else if (collision.gameObject.CompareTag("Death"))
         {
