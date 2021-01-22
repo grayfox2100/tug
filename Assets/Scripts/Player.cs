@@ -8,14 +8,15 @@ public class Player : Characters
 {
     public float livesMin = 1.0f;
     public float livesMax = 3.0f;
-    
-    private Menu _pauseMenu;
     private int _playerLives;
     private int _playerFullLives;
     private int _playerSpawnY;
+    private Menu _pauseMenu;
     
     void Start()
     {
+        if(tier == 0) TierGen();
+        if(body == null) bodyInitialize();
         _pauseMenu = GameObject.Find("Canvas").GetComponent<Menu>();
         _playerSpawnY = (int) gameObject.transform.position.y;
         _playerFullLives = _playerLives = TierBasedGen(tier, livesMin, livesMax);

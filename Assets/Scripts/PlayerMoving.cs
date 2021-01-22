@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerMoving : IMoving
 {
-    private float jumpForce = 12.0f;
+    //private float jumpForce = 12.0f;
     
     public void DoMoving(GameObject character, Characters characterObject)
     {
         Moving(Input.GetAxis("Horizontal"), characterObject.speed, characterObject.body);
-        Jumping(characterObject.body,character.GetComponent<CircleCollider2D>());
+        Jumping(characterObject.body,character.GetComponent<CircleCollider2D>(), characterObject.jumpForce);
     }
     
     private void Moving(float direction, float speed, Rigidbody2D body)
@@ -21,7 +21,7 @@ public class PlayerMoving : IMoving
         body.velocity = movement;
     }
     
-    private void Jumping(Rigidbody2D body, CircleCollider2D playerCollider)
+    private void Jumping(Rigidbody2D body, CircleCollider2D playerCollider, float jumpForce)
     {
         if (CheckGround(playerCollider) && Input.GetKeyDown(KeyCode.Space))
         {
