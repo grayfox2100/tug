@@ -5,13 +5,13 @@ using System;
 
 public class Characters : MonoBehaviour
 {
-    public float speed = 500.0f;
-    public float jumpForce = 50.0f;
+    [NonSerialized] public float speed = 500.0f;
+    [NonSerialized] public float jumpForce = 50.0f;
+    [NonSerialized] public int tier;
+    [NonSerialized] public float size;
+    [NonSerialized] public Rigidbody2D body;
     public float weightMin = 1.0f;
     public float weightMax = 5.0f;
-    public int tier;
-    public float size;
-    [NonSerialized] public Rigidbody2D body;
     private IMoving _mover;
     
     private void Start()
