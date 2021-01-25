@@ -8,7 +8,7 @@ public class PlayerMoving : IMoving
 {
     //private float jumpForce = 12.0f;
     
-    public void DoMoving(GameObject character, Characters characterObject)
+    public void DoMoving(GameObject character, Character characterObject)
     {
         Moving(Input.GetAxis("Horizontal"), characterObject.speed, characterObject.body);
         Jumping(characterObject.body,character.GetComponent<CircleCollider2D>(), characterObject.jumpForce);

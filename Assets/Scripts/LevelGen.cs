@@ -202,7 +202,9 @@ public class LevelGen : MonoBehaviour
             int i = 2;
             while (i < levelSizeX)
             {
-                Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
+                //Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
+                var obj = Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
+                obj.GetComponent<Character>().IMoveInit(new EnemyMoving());
                 i += enemiesFrequency;
             }
         } else return;
@@ -210,6 +212,7 @@ public class LevelGen : MonoBehaviour
     
     private void SpawnPlayer()
     {
-        Instantiate(playerPrefab, new Vector3(0,_startPoint + 1),Quaternion.identity);
+        var obj = Instantiate(playerPrefab, new Vector3(0,_startPoint + 1),Quaternion.identity);
+        obj.GetComponent<Character>().IMoveInit(new PlayerMoving());
     }
 }

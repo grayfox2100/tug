@@ -2,5 +2,5 @@
 
 public interface IMoving
 {
-    void DoMoving(GameObject character, Characters characterObject);
+    void DoMoving(GameObject character, Character characterObject);
 }

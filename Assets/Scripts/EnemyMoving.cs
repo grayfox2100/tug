@@ -8,7 +8,7 @@ public class EnemyMoving : IMoving
 {
     private int _moveDirection = 1;
     
-    public void DoMoving(GameObject character, Characters characterObject)
+    public void DoMoving(GameObject character, Character characterObject)
     {
         Moving(characterObject.speed, characterObject.body);
         ObstacleCheck(character.transform, characterObject.size);

@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : Characters
+public class Player : Character
 {
     public float livesMin = 1.0f;
     public float livesMax = 3.0f;

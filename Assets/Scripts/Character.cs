@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Characters : MonoBehaviour
+public class Character : MonoBehaviour
 {
     [NonSerialized] public float speed = 500.0f;
     [NonSerialized] public float jumpForce = 50.0f;
@@ -13,18 +13,22 @@ public class Characters : MonoBehaviour
     public float weightMin = 1.0f;
     public float weightMax = 5.0f;
     private IMoving _mover;
+
+    public void IMoveInit(IMoving mv)
+    {
+        _mover = mv;
+    }
     
     private void Start()
     {
-        if (gameObject.CompareTag("Player"))
+        /*if (gameObject.CompareTag("Player"))
         {
             _mover = new PlayerMoving();
         }
         else
         {
             _mover = new EnemyMoving();
-        }
-        
+        }*/
         if(body == null) bodyInitialize();
         if(tier == 0) TierGen();
         body.mass = TierBasedGen(tier, weightMin, weightMax);

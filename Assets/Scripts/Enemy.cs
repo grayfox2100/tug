@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿/*
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
@@ -19,13 +20,13 @@ public class Enemy : Characters
     {
         //_body = GetComponent<Rigidbody2D>();
         //StatsGen();
-    }*/
+    }#1#
 
     /*void Update()
     {
         Moving(_moveDirection, speed, _body);
         ObstacleCheck();
-    }*/
+    }#1#
     
     /*private void ObstacleCheck()
     {
@@ -33,7 +34,7 @@ public class Enemy : Characters
         {
             _moveDirection *= -1;
         }
-    }*/
+    }#1#
 
     /*private bool EnemyCheck()
     {
@@ -78,7 +79,7 @@ public class Enemy : Characters
         {
             return false;
         }
-    } */
+    } #1#
     
     /*private void StatsGen()
     {
@@ -86,5 +87,6 @@ public class Enemy : Characters
         //_enemySize = SizeGen(enemyTier);
         //transform.localScale = new Vector3(_enemySize,_enemySize);
         //_body.mass = TierBasedGen(enemyTier, weightMin, weightMax);
-    }*/
+    }#1#
 }
+*/
