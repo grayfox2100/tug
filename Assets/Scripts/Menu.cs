@@ -10,11 +10,13 @@ public class Menu : MonoBehaviour
     private static bool levelDone = false;
     public GameObject PauseMenuUI;
     public GameObject ResumeButton;
-    private Player playerScript;
+    //TODO: UI
+    //private Player playerScript;
     
     private void Start()
     {
-        playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        //TODO: UI
+        //playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
     void Update()
@@ -56,7 +58,8 @@ public class Menu : MonoBehaviour
     {
         levelDone = false;
         Resume();
-        playerScript.Respawn();
+        //TODO: UI
+        //playerScript.Respawn();
     }
 
     public void AnotherLevel()

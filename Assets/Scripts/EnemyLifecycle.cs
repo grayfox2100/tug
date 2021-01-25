@@ -4,14 +4,22 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyMoving : IMoving
+public class EnemyLifecycle : ILifecycle
 {
     private int _moveDirection = 1;
-    
-    public void DoMoving(GameObject character, Character characterObject)
+    private GameObject _character;
+    private Character _characterObject;
+
+    public EnemyLifecycle(GameObject character, Character characterObject)
     {
-        Moving(characterObject.speed, characterObject.body);
-        ObstacleCheck(character.transform, characterObject.size);
+        _character = character;
+        _characterObject = characterObject;
+    }
+
+    public void DoLifecycle()
+    {
+        Moving(_characterObject.speed, _characterObject.body);
+        ObstacleCheck(_character.transform, _characterObject.size);
     }
 
     private void Moving(float speed, Rigidbody2D body)

@@ -6,18 +6,22 @@ using System;
 public class Character : MonoBehaviour
 {
     [NonSerialized] public float speed = 500.0f;
-    [NonSerialized] public float jumpForce = 50.0f;
     [NonSerialized] public int tier;
     [NonSerialized] public float size;
     [NonSerialized] public Rigidbody2D body;
     public float weightMin = 1.0f;
     public float weightMax = 5.0f;
-    private IMoving _mover;
+    private ILifecycle _lifecycler;
 
-    public void IMoveInit(IMoving mv)
+    public void LifecyclerInit(ILifecycle lc)
     {
-        _mover = mv;
+        _lifecycler = lc;
     }
+
+    /*public Character(IMoving mv)
+    {
+        _mover = mv; 
+    }  */
     
     private void Start()
     {
@@ -38,7 +42,8 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        _mover.DoMoving(gameObject, this);
+        //_lifecycler.DoLifecycle(gameObject, this);
+        _lifecycler.DoLifecycle(/*gameObject, this*/);
     }
 
     protected void bodyInitialize()
@@ -58,7 +63,7 @@ public class Character : MonoBehaviour
         return baseSize + (tier * 0.1f);
     }
 
-    protected int TierBasedGen(int tier, float min, float max)
+    public int TierBasedGen(int tier, float min, float max)
     {
         return (int)Math.Round((((max - min) / 6) * tier) + 1);
     }
