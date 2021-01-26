@@ -13,6 +13,8 @@ public class Menu : MonoBehaviour
     //TODO: UI
     //private Player playerScript;
     
+    
+    
     private void Start()
     {
         //TODO: UI
@@ -40,21 +42,21 @@ public class Menu : MonoBehaviour
         }
     }
 
-    public void Resume()
+    private void Resume()
     {
         PauseMenuUI.SetActive(false);
         Time.timeScale = 1.0f;
         gameIsPaused = false;
     }
 
-    void Pause()
+    private void Pause()
     {
         PauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         gameIsPaused = true;
     }
 
-    public void Restart()
+    private void Restart()
     {
         levelDone = false;
         Resume();
@@ -62,19 +64,19 @@ public class Menu : MonoBehaviour
         //playerScript.Respawn();
     }
 
-    public void AnotherLevel()
+    private void AnotherLevel()
     {
         levelDone = false;
         Resume();
         SceneManager.LoadScene("SampleScene");
     }
 
-    public void LevelDone()
+    private void LevelDone()
     {
         levelDone = true;
     }
 
-    public void Exit()
+    private void Exit()
     {
         Application.Quit();
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class PlayerLifecycle : ILifecycle
@@ -18,6 +19,8 @@ public class PlayerLifecycle : ILifecycle
     private Character _characterObject;
     private CircleCollider2D _playerCollider;
     private bool _init = false;
+
+    UnityEvent playerDeath;
     
     public void DoLifecycle(GameObject character)
     {
@@ -29,6 +32,9 @@ public class PlayerLifecycle : ILifecycle
 
     private void Init(GameObject character)
     {
+        if (playerDeath == null)
+            playerDeath = new UnityEvent();
+        
         _character = character;
         _characterObject = _character.GetComponent<Character>();
         _playerSpawnY = (int) character.transform.position.y;
