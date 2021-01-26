@@ -13,15 +13,46 @@ public class Character : MonoBehaviour
     public float weightMax = 5.0f;
     private ILifecycle _lifecycler;
 
-    public void LifecyclerInit(ILifecycle lc)
+    public enum Types
     {
-        _lifecycler = lc;
+        Player,
+        Enemy
+    }
+    
+    public static Character Create(ILifecycle lifecycler, Vector3 spawnPoint, Types type)
+    {
+        GameObject obj = new GameObject();
+        obj.transform.position = spawnPoint;
+        obj.AddComponent<Rigidbody2D>();
+        obj.AddComponent<CircleCollider2D>(); 
+        
+        SpriteRenderer sp = obj.AddComponent<SpriteRenderer>();
+        Character scriptComponent = obj.AddComponent<Character>();
+        scriptComponent.Init(lifecycler);
+        
+        switch (type)
+        {
+            case Types.Player:
+                obj.name = "Player";
+                obj.tag = "Player";
+                sp.sprite = Resources.Load<Sprite>("Sprites/player");
+                break;
+            case Types.Enemy:
+                obj.name = "Enemy";
+                obj.tag = "Enemy";
+                sp.sprite = Resources.Load<Sprite>("Sprites/enemy");
+                break;
+            default:
+                break;
+        }
+
+        return scriptComponent;
     }
 
-    /*public Character(IMoving mv)
+    private void Init(ILifecycle lifecycler)
     {
-        _mover = mv; 
-    }  */
+        _lifecycler = lifecycler;
+    }
     
     private void Start()
     {
@@ -33,7 +64,7 @@ public class Character : MonoBehaviour
         {
             _mover = new EnemyMoving();
         }*/
-        if(body == null) bodyInitialize();
+        if(body == null) BodyInitialize();
         if(tier == 0) TierGen();
         body.mass = TierBasedGen(tier, weightMin, weightMax);
         size = SizeGen(tier);
@@ -42,29 +73,28 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        //_lifecycler.DoLifecycle(gameObject, this);
-        _lifecycler.DoLifecycle(/*gameObject, this*/);
+        _lifecycler.DoLifecycle(gameObject);
     }
 
-    protected void bodyInitialize()
+    private void BodyInitialize()
     {
         body = GetComponent<Rigidbody2D>();
     }
     
-    protected void TierGen()
+    private void TierGen()
     {
         System.Random rnd = new System.Random();
         tier = rnd.Next(1,6); // Count of tiers depends on size (0.5f to 1.0f)
     }
 
-    protected float SizeGen(int tier)
+    private float SizeGen(int charTier)
     {
         const float baseSize = 0.4f;
-        return baseSize + (tier * 0.1f);
+        return baseSize + (charTier * 0.1f);
     }
 
-    public int TierBasedGen(int tier, float min, float max)
+    public int TierBasedGen(int charTier, float min, float max)
     {
-        return (int)Math.Round((((max - min) / 6) * tier) + 1);
+        return (int)Math.Round((((max - min) / 6) * charTier) + 1);
     }
 }

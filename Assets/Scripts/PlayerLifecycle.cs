@@ -17,23 +17,26 @@ public class PlayerLifecycle : ILifecycle
     private GameObject _character;
     private Character _characterObject;
     private CircleCollider2D _playerCollider;
+    private bool _init = false;
     
-    public PlayerLifecycle(GameObject character, Character characterObject)
+    public void DoLifecycle(GameObject character)
     {
-        _character = character;
-        _characterObject = characterObject;
-        _playerSpawnY = (int) character.transform.position.y;
-        _playerFullLives = _playerLives = characterObject.TierBasedGen(characterObject.tier, livesMin, livesMax);
-        _playerCollider = _character.GetComponent<CircleCollider2D>();
-    }
-    
-    public void DoLifecycle()
-    {
+        if(!_init) Init(character);
         Moving(Input.GetAxis("Horizontal"), _characterObject.speed, _characterObject.body);
         Jumping(_characterObject.body,_playerCollider, jumpForce);
         HealthCheck(_character);
     }
 
+    private void Init(GameObject character)
+    {
+        _character = character;
+        _characterObject = _character.GetComponent<Character>();
+        _playerSpawnY = (int) character.transform.position.y;
+        _playerFullLives = _playerLives = _characterObject.TierBasedGen(_characterObject.tier, livesMin, livesMax);
+        _playerCollider = _character.GetComponent<CircleCollider2D>();
+        _init = true;
+    }
+    
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))

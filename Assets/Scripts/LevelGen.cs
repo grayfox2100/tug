@@ -202,8 +202,9 @@ public class LevelGen : MonoBehaviour
             int i = 2;
             while (i < levelSizeX)
             {
-                var obj = Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
-                obj.GetComponent<Character>().LifecyclerInit(new EnemyLifecycle(obj, obj.GetComponent<Character>()));
+                //var obj = Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
+                //obj.GetComponent<Character>().LifecyclerInit(new EnemyLifecycle(obj, obj.GetComponent<Character>()));
+                Character.Create(new EnemyLifecycle(), new Vector3(i, levelSizeY), Character.Types.Enemy);
                 i += enemiesFrequency;
             }
         } else return;
@@ -211,8 +212,6 @@ public class LevelGen : MonoBehaviour
     
     private void SpawnPlayer()
     {
-        var obj = Instantiate(playerPrefab, new Vector3(0,_startPoint + 1),Quaternion.identity);
-        obj.GetComponent<Character>().LifecyclerInit(new PlayerLifecycle(obj, obj.GetComponent<Character>()));
-        //Character player = new Character(new PlayerMoving());
+        Character.Create(new PlayerLifecycle(), new Vector3(0,_startPoint + 1), Character.Types.Player);
     }
 }

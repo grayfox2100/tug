@@ -2,6 +2,5 @@
 
 public interface ILifecycle
 {
-    //void DoLifecycle(GameObject character, Character characterObject);
-    void DoLifecycle();
+    void DoLifecycle(GameObject character);
 }
