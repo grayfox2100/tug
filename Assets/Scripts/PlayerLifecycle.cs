@@ -7,27 +7,51 @@ using UnityEngine.UI;
 
 public class PlayerLifecycle : ILifecycle
 {
+    public float livesMin = 1.0f;
+    public float livesMax = 3.0f;
     private float jumpForce = 50.0f;
-    
+    private int _playerLives;
+    private int _playerFullLives;
+    private int _playerSpawnY;
     //TODO: UI
     //private Menu _pauseMenu;
+    private GameObject _character;
+    private Character _characterObject;
+    private CircleCollider2D _playerCollider;
+    private bool _init = false;
+
+    UnityEvent playerDeath;
     
-    public void DoLifecycle()
+    public void DoLifecycle(GameObject character)
     {
-        Moving(Input.GetAxis("Horizontal"), LevelData.Player.speed, LevelData.Player.body);
-        Jumping(LevelData.Player.body);
-        HealthCheck(LevelData.Player.gameObject);
+        if(!_init) Init(character);
+        Moving(Input.GetAxis("Horizontal"), _characterObject.speed, _characterObject.body);
+        Jumping(_characterObject.body,_playerCollider, jumpForce);
+        HealthCheck(_character);
+    }
+
+    private void Init(GameObject character)
+    {
+        if (playerDeath == null)
+            playerDeath = new UnityEvent();
+        
+        _character = character;
+        _characterObject = _character.GetComponent<Character>();
+        _playerSpawnY = (int) character.transform.position.y;
+        _playerFullLives = _playerLives = _characterObject.TierBasedGen(_characterObject.tier, livesMin, livesMax);
+        _playerCollider = _character.GetComponent<CircleCollider2D>();
+        _init = true;
     }
     
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            LevelData.Player.body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            LevelData.PlayerLives--;
+            _characterObject.body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            _playerLives--;
         } else if (collision.gameObject.CompareTag("Death"))
         {
-            LevelData.Player.gameObject.SetActive(false);
+            _character.SetActive(false);
             //TODO: UI
             //_pauseMenu.LevelDone();
         } else if (collision.gameObject.CompareTag("Finish"))
@@ -39,7 +63,7 @@ public class PlayerLifecycle : ILifecycle
     
     private void HealthCheck(GameObject character)
     {
-        if ( LevelData.PlayerLives < 1)
+        if (_playerLives < 1)
         {
             character.SetActive(false);
             //TODO: UI
@@ -49,8 +73,8 @@ public class PlayerLifecycle : ILifecycle
     
     private void Respawn(GameObject character)
     {
-        LevelData.PlayerLives = LevelData.PlayerFullLives;
-        character.transform.position = LevelData.PlayerSpawn;
+        _playerLives = _playerFullLives;
+        character.transform.position = new Vector3(0, _playerSpawnY + 1);
         character.SetActive(true);
     }
     
@@ -61,17 +85,17 @@ public class PlayerLifecycle : ILifecycle
         body.velocity = movement;
     }
     
-    private void Jumping(Rigidbody2D body)
+    private void Jumping(Rigidbody2D body, CircleCollider2D playerCollider, float jumpForce)
     {
-        if (Input.GetKeyDown(KeyCode.Space) && CheckGround())
+        if (CheckGround(playerCollider) && Input.GetKeyDown(KeyCode.Space))
         {
             body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
 
-    private bool CheckGround()
+    private bool CheckGround(CircleCollider2D playerCollider)
     {
-        Bounds bounds = LevelData.PlayerCollider.bounds;
+        var bounds = playerCollider.bounds;
         Vector3 max = bounds.max; 
         Vector3 min = bounds.min;
         Vector2 corner1 = new Vector2(max.x, min.y - .1f);

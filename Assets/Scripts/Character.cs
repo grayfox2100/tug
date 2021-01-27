@@ -9,19 +9,61 @@ public class Character : MonoBehaviour
     [NonSerialized] public int tier;
     [NonSerialized] public float size;
     [NonSerialized] public Rigidbody2D body;
-    public float livesMin = 1.0f;
-    public float livesMax = 3.0f;
     public float weightMin = 1.0f;
     public float weightMax = 5.0f;
     private ILifecycle _lifecycler;
+
+    public enum Types
+    {
+        Player,
+        Enemy
+    }
     
-    public void Init(ILifecycle lifecycler)
+    public static Character Create(ILifecycle lifecycler, Vector3 spawnPoint, Types type)
+    {
+        GameObject obj = new GameObject();
+        obj.transform.position = spawnPoint;
+        obj.AddComponent<Rigidbody2D>();
+        obj.AddComponent<CircleCollider2D>(); 
+        
+        SpriteRenderer sp = obj.AddComponent<SpriteRenderer>();
+        Character scriptComponent = obj.AddComponent<Character>();
+        scriptComponent.Init(lifecycler);
+        
+        switch (type)
+        {
+            case Types.Player:
+                obj.name = "Player";
+                obj.tag = "Player";
+                sp.sprite = Resources.Load<Sprite>("Sprites/player");
+                break;
+            case Types.Enemy:
+                obj.name = "Enemy";
+                obj.tag = "Enemy";
+                sp.sprite = Resources.Load<Sprite>("Sprites/enemy");
+                break;
+            default:
+                break;
+        }
+
+        return scriptComponent;
+    }
+
+    private void Init(ILifecycle lifecycler)
     {
         _lifecycler = lifecycler;
     }
     
     private void Start()
     {
+        /*if (gameObject.CompareTag("Player"))
+        {
+            _mover = new PlayerMoving();
+        }
+        else
+        {
+            _mover = new EnemyMoving();
+        }*/
         if(body == null) BodyInitialize();
         if(tier == 0) TierGen();
         body.mass = TierBasedGen(tier, weightMin, weightMax);
@@ -31,7 +73,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        _lifecycler.DoLifecycle();
+        _lifecycler.DoLifecycle(gameObject);
     }
 
     private void BodyInitialize()
