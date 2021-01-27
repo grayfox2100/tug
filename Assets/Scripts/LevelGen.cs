@@ -202,9 +202,7 @@ public class LevelGen : MonoBehaviour
             int i = 2;
             while (i < levelSizeX)
             {
-                //var obj = Instantiate(enemyPrefab, new Vector3(i, levelSizeY), Quaternion.identity);
-                //obj.GetComponent<Character>().LifecyclerInit(new EnemyLifecycle(obj, obj.GetComponent<Character>()));
-                Character.Create(new EnemyLifecycle(), new Vector3(i, levelSizeY), Character.Types.Enemy);
+                //Character.Create(new EnemyLifecycle(), new Vector3(i, levelSizeY), Character.Types.Enemy);
                 i += enemiesFrequency;
             }
         } else return;
@@ -212,6 +210,11 @@ public class LevelGen : MonoBehaviour
     
     private void SpawnPlayer()
     {
-        Character.Create(new PlayerLifecycle(), new Vector3(0,_startPoint + 1), Character.Types.Player);
+        LevelData.PlayerSpawn = new Vector3(0, _startPoint + 1);
+        LevelData.Player = CharFactory.Create(CharFactory.Types.Player, LevelData.PlayerSpawn);
+        LevelData.PlayerCollider = LevelData.Player.GetComponent<CircleCollider2D>();
+        LevelData.PlayerFullLives = 
+            LevelData.PlayerLives = 
+                LevelData.Player.TierBasedGen(LevelData.Player.tier, LevelData.Player.livesMin, LevelData.Player.livesMax);
     }
 }
