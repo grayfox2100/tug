@@ -28,6 +28,7 @@ public class PlayerLifecycle : ILifecycle
         } else if (collision.gameObject.CompareTag("Death"))
         {
             LevelData.Player.gameObject.SetActive(false);
+
             //TODO: UI
             //_pauseMenu.LevelDone();
         } else if (collision.gameObject.CompareTag("Finish"))
