@@ -10,11 +10,15 @@ public class Menu : MonoBehaviour
     private static bool levelDone = false;
     public GameObject PauseMenuUI;
     public GameObject ResumeButton;
-    private Player playerScript;
+    //TODO: UI
+    //private Player playerScript;
+    
+    
     
     private void Start()
     {
-        playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        //TODO: UI
+        //playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
     void Update()
@@ -38,40 +42,41 @@ public class Menu : MonoBehaviour
         }
     }
 
-    public void Resume()
+    private void Resume()
     {
         PauseMenuUI.SetActive(false);
         Time.timeScale = 1.0f;
         gameIsPaused = false;
     }
 
-    void Pause()
+    private void Pause()
     {
         PauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         gameIsPaused = true;
     }
 
-    public void Restart()
+    private void Restart()
     {
         levelDone = false;
         Resume();
-        playerScript.Respawn();
+        //TODO: UI
+        //playerScript.Respawn();
     }
 
-    public void AnotherLevel()
+    private void AnotherLevel()
     {
         levelDone = false;
         Resume();
         SceneManager.LoadScene("SampleScene");
     }
 
-    public void LevelDone()
+    private void LevelDone()
     {
         levelDone = true;
     }
 
-    public void Exit()
+    private void Exit()
     {
         Application.Quit();
     }
