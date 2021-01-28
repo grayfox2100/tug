@@ -27,6 +27,7 @@ public static class CharFactory
                 obj.name = "Player";
                 obj.tag = "Player";
                 sp.sprite = Resources.Load<Sprite>("Sprites/player");
+                obj.AddComponent<PlayerCollision>();
                 scriptComponent.Init(new PlayerLifecycle());
                 break;
             case Types.Enemy:

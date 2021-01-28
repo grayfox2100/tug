@@ -17,8 +17,8 @@ public class Menu : MonoBehaviour
     
     private void Start()
     {
-        //TODO: UI
-        //playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        PlayerCollision.Dying += this.LevelDone;
+        PlayerCollision.Finish += this.LevelDone;
     }
 
     void Update()

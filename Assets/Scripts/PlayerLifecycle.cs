@@ -9,50 +9,28 @@ public class PlayerLifecycle : ILifecycle
 {
     private float jumpForce = 50.0f;
     
-    //TODO: UI
-    //private Menu _pauseMenu;
-    
     public void DoLifecycle()
     {
         Moving(Input.GetAxis("Horizontal"), LevelData.Player.speed, LevelData.Player.body);
-        Jumping(LevelData.Player.body);
-        HealthCheck(LevelData.Player.gameObject);
+        Jumping();
+        HealthCheck();
     }
     
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void HealthCheck()
     {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            LevelData.Player.body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            LevelData.PlayerLives--;
-        } else if (collision.gameObject.CompareTag("Death"))
+        if (LevelData.PlayerLives < 1)
         {
             LevelData.Player.gameObject.SetActive(false);
-
-            //TODO: UI
-            //_pauseMenu.LevelDone();
-        } else if (collision.gameObject.CompareTag("Finish"))
-        {
             //TODO: UI
             //_pauseMenu.LevelDone();
         }
     }
     
-    private void HealthCheck(GameObject character)
-    {
-        if ( LevelData.PlayerLives < 1)
-        {
-            character.SetActive(false);
-            //TODO: UI
-            //_pauseMenu.LevelDone();
-        }
-    }
-    
-    private void Respawn(GameObject character)
+    public void Respawn()
     {
         LevelData.PlayerLives = LevelData.PlayerFullLives;
-        character.transform.position = LevelData.PlayerSpawn;
-        character.SetActive(true);
+        LevelData.Player.gameObject.transform.position = LevelData.PlayerSpawn;
+        LevelData.Player.gameObject.SetActive(true);
     }
     
     private void Moving(float direction, float speed, Rigidbody2D body)
@@ -62,11 +40,11 @@ public class PlayerLifecycle : ILifecycle
         body.velocity = movement;
     }
     
-    private void Jumping(Rigidbody2D body)
+    private void Jumping()
     {
         if (Input.GetKeyDown(KeyCode.Space) && CheckGround())
         {
-            body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            LevelData.Player.body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
 
