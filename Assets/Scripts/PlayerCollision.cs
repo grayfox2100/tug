@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerCollision : MonoBehaviour
 {
@@ -7,13 +8,29 @@ public class PlayerCollision : MonoBehaviour
     public static event PlayerCollisionEventHandler Dying;
     public static event PlayerCollisionEventHandler Finish;
 
+    private PlayerLife _playerLife;
+    
+
+
+    void Start()
+    { 
+        _playerLife = LevelData.Player.gameObject.GetComponent<PlayerLife>();
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            //LevelData.Player.body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            //LevelData.PlayerLives--;
-            Debug.Log("Enemy damage");
+            LevelData.Player.body.AddForce(Vector2.up * PlayerLifecycle.jumpForce, ForceMode2D.Impulse);
+            _playerLife.PlayerLives--;
+            
+            if (GetDamage != null) GetDamage.Invoke();
+            
+            if (_playerLife.PlayerLives < 1)
+            {
+                if (Dying != null) Dying.Invoke();
+                LevelData.Player.gameObject.SetActive(false);
+            } 
         } 
         else if (collision.gameObject.CompareTag("Death"))
         {

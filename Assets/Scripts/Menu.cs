@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
@@ -10,15 +11,18 @@ public class Menu : MonoBehaviour
     private static bool levelDone = false;
     public GameObject PauseMenuUI;
     public GameObject ResumeButton;
-    //TODO: UI
-    //private Player playerScript;
-    
-    
-    
+    public GameObject LifePanel;
+    private PlayerLife _playerLife;
+
     private void Start()
     {
         PlayerCollision.Dying += this.LevelDone;
         PlayerCollision.Finish += this.LevelDone;
+        
+        _playerLife = LevelData.Player.gameObject.GetComponent<PlayerLife>();
+
+        Text lifeText = LifePanel.GetComponent<Text>();
+        Debug.Log("Player lives: " + _playerLife.PlayerLives);
     }
 
     void Update()
@@ -60,8 +64,7 @@ public class Menu : MonoBehaviour
     {
         levelDone = false;
         Resume();
-        //TODO: UI
-        //playerScript.Respawn();
+        _playerLife.Respawn();
     }
 
     private void AnotherLevel()

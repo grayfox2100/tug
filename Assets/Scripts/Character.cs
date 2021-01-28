@@ -9,8 +9,7 @@ public class Character : MonoBehaviour
     [NonSerialized] public int tier;
     [NonSerialized] public float size;
     [NonSerialized] public Rigidbody2D body;
-    public float livesMin = 1.0f;
-    public float livesMax = 3.0f;
+
     public float weightMin = 1.0f;
     public float weightMax = 5.0f;
     private ILifecycle _lifecycler;
@@ -27,6 +26,8 @@ public class Character : MonoBehaviour
         body.mass = TierBasedGen(tier, weightMin, weightMax);
         size = SizeGen(tier);
         transform.localScale = new Vector3(size,size);
+        Debug.Log("LevelData.Player.tier: " + LevelData.Player.tier);
+        Debug.Log("tier: " + tier);
     }
 
     private void Update()

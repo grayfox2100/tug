@@ -16,8 +16,6 @@ public class LevelGen : MonoBehaviour
     public GameObject lavaPrefab;
     public GameObject blockPrefab;
     public GameObject finishPrefab;
-    public GameObject enemyPrefab;
-    public GameObject playerPrefab;
     
     private System.Random _rnd = new System.Random();
 
@@ -212,9 +210,6 @@ public class LevelGen : MonoBehaviour
     {
         LevelData.PlayerSpawn = new Vector3(0, _startPoint + 1);
         LevelData.Player = CharFactory.Create(CharFactory.Types.Player, LevelData.PlayerSpawn);
-        LevelData.PlayerCollider = LevelData.Player.GetComponent<CircleCollider2D>();
-        LevelData.PlayerFullLives = 
-            LevelData.PlayerLives = 
-                LevelData.Player.TierBasedGen(LevelData.Player.tier, LevelData.Player.livesMin, LevelData.Player.livesMax);
+        Debug.Log("Player tier: " + LevelData.Player.tier);
     }
 }

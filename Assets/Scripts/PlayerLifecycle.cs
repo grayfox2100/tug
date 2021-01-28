@@ -1,38 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class PlayerLifecycle : ILifecycle
 {
-    private float jumpForce = 50.0f;
+    [NonSerialized] public static float jumpForce = 50.0f;
+    //[NonSerialized] public CircleCollider2D PlayerCollider;
     
     public void DoLifecycle()
     {
         Moving(Input.GetAxis("Horizontal"), LevelData.Player.speed, LevelData.Player.body);
         Jumping();
-        HealthCheck();
     }
-    
-    private void HealthCheck()
-    {
-        if (LevelData.PlayerLives < 1)
-        {
-            LevelData.Player.gameObject.SetActive(false);
-            //TODO: UI
-            //_pauseMenu.LevelDone();
-        }
-    }
-    
-    public void Respawn()
-    {
-        LevelData.PlayerLives = LevelData.PlayerFullLives;
-        LevelData.Player.gameObject.transform.position = LevelData.PlayerSpawn;
-        LevelData.Player.gameObject.SetActive(true);
-    }
-    
+
     private void Moving(float direction, float speed, Rigidbody2D body)
     {
         float deltaX = direction * speed * Time.deltaTime; 
@@ -50,7 +29,8 @@ public class PlayerLifecycle : ILifecycle
 
     private bool CheckGround()
     {
-        Bounds bounds = LevelData.PlayerCollider.bounds;
+        //Bounds bounds = PlayerCollider.bounds;
+        Bounds bounds = LevelData.Player.gameObject.GetComponent<CircleCollider2D>().bounds;
         Vector3 max = bounds.max; 
         Vector3 min = bounds.min;
         Vector2 corner1 = new Vector2(max.x, min.y - .1f);
