@@ -26,8 +26,6 @@ public class Character : MonoBehaviour
         body.mass = TierBasedGen(tier, weightMin, weightMax);
         size = SizeGen(tier);
         transform.localScale = new Vector3(size,size);
-        Debug.Log("LevelData.Player.tier: " + LevelData.Player.tier);
-        Debug.Log("tier: " + tier);
     }
 
     private void Update()

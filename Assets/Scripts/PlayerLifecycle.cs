@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerLifecycle : ILifecycle
 {
     [NonSerialized] public static float jumpForce = 50.0f;
-    //[NonSerialized] public CircleCollider2D PlayerCollider;
     
     public void DoLifecycle()
     {
@@ -29,7 +28,6 @@ public class PlayerLifecycle : ILifecycle
 
     private bool CheckGround()
     {
-        //Bounds bounds = PlayerCollider.bounds;
         Bounds bounds = LevelData.Player.gameObject.GetComponent<CircleCollider2D>().bounds;
         Vector3 max = bounds.max; 
         Vector3 min = bounds.min;

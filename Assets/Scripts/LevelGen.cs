@@ -210,6 +210,5 @@ public class LevelGen : MonoBehaviour
     {
         LevelData.PlayerSpawn = new Vector3(0, _startPoint + 1);
         LevelData.Player = CharFactory.Create(CharFactory.Types.Player, LevelData.PlayerSpawn);
-        Debug.Log("Player tier: " + LevelData.Player.tier);
     }
 }

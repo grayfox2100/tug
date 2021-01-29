@@ -13,18 +13,17 @@ public class Menu : MonoBehaviour
     public GameObject ResumeButton;
     public GameObject LifePanel;
     private PlayerLife _playerLife;
+    private Text _lifeText;
 
     private void Start()
     {
-        PlayerCollision.Dying += this.LevelDone;
+        PlayerLife.Dying += this.LevelDone;
+        PlayerLife.LifeChange += this.ShowLives;
         PlayerCollision.Finish += this.LevelDone;
         
         _playerLife = LevelData.Player.gameObject.GetComponent<PlayerLife>();
-
-        Text lifeText = LifePanel.GetComponent<Text>();
-        Debug.Log("Player lives: " + _playerLife.PlayerLives);
+        _lifeText = LifePanel.GetComponentInChildren<Text>();
     }
-
     void Update()
     {
         if (levelDone)
@@ -46,39 +45,38 @@ public class Menu : MonoBehaviour
         }
     }
 
+    private void ShowLives()
+    {
+        _lifeText.text = "<3: " + _playerLife.PlayerLives;
+    }
     private void Resume()
     {
         PauseMenuUI.SetActive(false);
         Time.timeScale = 1.0f;
         gameIsPaused = false;
     }
-
     private void Pause()
     {
         PauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         gameIsPaused = true;
     }
-
     private void Restart()
     {
         levelDone = false;
         Resume();
         _playerLife.Respawn();
     }
-
     private void AnotherLevel()
     {
         levelDone = false;
         Resume();
         SceneManager.LoadScene("SampleScene");
     }
-
     private void LevelDone()
     {
         levelDone = true;
     }
-
     private void Exit()
     {
         Application.Quit();
