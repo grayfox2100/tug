@@ -7,26 +7,13 @@ using UnityEngine.UI;
 public class EnemyLifecycle : ILifecycle
 {
     private int _moveDirection = 1;
-    private GameObject _character;
-    private Character _characterObject;
-
-    public EnemyLifecycle()
-    {
-        //_character = LevelData.Enemies.;
-        _characterObject = _character.GetComponent<Character>();
-    }
-
+    public Character Enemy;
+    
     public void DoLifecycle()
     {
-        Moving(_characterObject.speed, _characterObject.body);
-        ObstacleCheck(_character.transform, _characterObject.size);
+        Moving(Enemy.speed, Enemy.body);
+        ObstacleCheck(Enemy.gameObject.transform, Enemy.size);
     }
-
-    /*private void Init(GameObject character)
-    {
-        _character = character;
-        _characterObject = _character.GetComponent<Character>();
-    }*/
     
     private void Moving(float speed, Rigidbody2D body)
     {

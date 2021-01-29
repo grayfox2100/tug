@@ -200,7 +200,8 @@ public class LevelGen : MonoBehaviour
             int i = 2;
             while (i < levelSizeX)
             {
-                //Character.Create(new EnemyLifecycle(), new Vector3(i, levelSizeY), Character.Types.Enemy);
+                //LevelData.Enemies.Add(CharFactory.Create(CharFactory.Types.Enemy, new Vector3(i, levelSizeY)));
+                CharFactory.Create(CharFactory.Types.Enemy, new Vector3(i, levelSizeY));
                 i += enemiesFrequency;
             }
         } else return;

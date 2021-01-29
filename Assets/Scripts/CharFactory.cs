@@ -35,7 +35,11 @@ public static class CharFactory
                 obj.name = "Enemy";
                 obj.tag = "Enemy";
                 sp.sprite = Resources.Load<Sprite>("Sprites/enemy");
-                scriptComponent.Init(new EnemyLifecycle());
+
+                EnemyLifecycle tmp = new EnemyLifecycle();
+                tmp.Enemy = scriptComponent;
+                scriptComponent.Init(tmp);
+                
                 break;
             default:
                 break;
